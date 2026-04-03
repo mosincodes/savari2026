@@ -251,9 +251,10 @@
             .scale-btn { font-size: .8rem; }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+    <!-- Targets POST from submitSurvey() so the page never navigates away -->
+    <iframe name="google-forms-target" title="Google Form submit" style="display:none;width:0;height:0;border:0;"></iframe>
     <div id="progress-track"><div id="progress-fill"></div></div>
     <header>
         <div class="logo">سواری <span>Savari</span></div>
@@ -288,8 +289,8 @@
             <div class="divider"></div>
             <h2 class="q-text" style="font-size: clamp(1.3rem, 3vw, 1.6rem);">Before we begin — how can we reach you?</h2>
             <p class="q-sub" style="margin-bottom: 20px;">We'll only contact you when Savari launches in your area. No spam, ever.</p>
-            <input class="text-input" id="q0-contact" type="text" placeholder="WhatsApp number or email address" />
-            <p class="input-error" id="q0-error">Please enter your WhatsApp number or email to continue.</p>
+            <input class="text-input" id="q0-contact" type="email" autocomplete="email" placeholder="Email address" />
+            <p class="input-error" id="q0-error">Please enter your email to continue.</p>
             <div class="btn-row" style="margin-top: 16px;">
                 <button class="btn-primary accent" onclick="startSurvey()">
                     Begin Survey
@@ -479,15 +480,14 @@
     </main>
 
     <script>
-        // --- 1. GLOBAL SCOPE INITIALIZATION ---
-        // Ensuring these are declared exactly once
-        const SUPABASE_URL = 'https://eadpjybuehonsterafhy.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_DqKqXetiExv9XK8pD40bMg_ZDH3mcKA';
-        
-        // This is where the error was happening. We check if it exists before creating.
-        let supabase;
-        if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-             supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const GOOGLE_FORMS_ACTION =
+            'https://docs.google.com/forms/d/e/1FAIpQLSd7UAsdyaeGjOK2c0LnQRxeFkh3WhbuIJgRj5Ih4OncdFYXQw/formResponse';
+        const GOOGLE_FORMS_ENTRY_CONTACT = 'emailAddress';
+        const GOOGLE_FORMS_ENTRY_SURVEY = 'entry.720102241';
+        const GOOGLE_FORMS_FBZX = '1731221796287493141';
+
+        function contactLooksLikeEmail(s) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s || '').trim());
         }
 
         const TOTAL = 5;
@@ -502,12 +502,21 @@
             
             if (!contact) {
                 contactInput.classList.add('error');
-                errorEl.textContent = 'Please enter your WhatsApp number or email to continue.';
+                errorEl.textContent = 'Please enter your email to continue.';
                 errorEl.classList.add('visible');
                 contactInput.focus();
                 return;
             }
-            
+
+            if (GOOGLE_FORMS_ENTRY_CONTACT === 'emailAddress' && !contactLooksLikeEmail(contact)) {
+                contactInput.classList.add('error');
+                errorEl.textContent =
+                    'This survey is linked to a Google Form that requires an email address. Enter a valid email, or change that form field to Short answer in Google Forms.';
+                errorEl.classList.add('visible');
+                contactInput.focus();
+                return;
+            }
+
             contactInput.classList.remove('error');
             errorEl.classList.remove('visible');
             answers.contact = contact;
@@ -542,7 +551,25 @@
             answers[id] = val;
         }
 
-        async function submitSurvey() {
+        function buildGoogleFormSurveyBody(flat) {
+            const from = [flat.q1, flat.q1_other].filter(Boolean).join(' — ');
+            const to = [flat.q1b, flat.q1b_other].filter(Boolean).join(' — ');
+            const lines = [
+                ['Commute from', from],
+                ['Commute to', to],
+                ['How you get to work', flat.q2],
+                ['Daily spend (one way)', flat.q2b],
+                ['Top frustrations', flat.q3],
+                ['Likelihood 1–5', flat.q4],
+                ['Trust factors', flat.q5],
+                ['Driver / rider / both', flat.q6],
+                ['Willing to pay', flat.q7],
+                ['Extra notes', flat.q8_open_text || '—']
+            ];
+            return lines.map(([k, v]) => k + ': ' + (v || '—')).join('\n');
+        }
+
+        function submitSurvey() {
             answers.q8_open_text = document.getElementById('q8-text').value;
             if (answers.q1 === 'Other') answers.q1_other = document.getElementById('q1-other').value;
             if (answers.q1b === 'Other') answers.q1b_other = document.getElementById('q1b-other').value;
@@ -558,34 +585,60 @@
             btn.style.pointerEvents = 'none';
             btn.style.opacity = '0.6';
 
-            try {
-                const { error } = await supabase
-                    .from('survey_responses')
-                    .insert({
-                        contact:            flat.contact || '',
-                        commute_from:       flat.q1 || '',
-                        commute_from_other: flat.q1_other || '',
-                        commute_to:         flat.q1b || '',
-                        commute_to_other:   flat.q1b_other || '',
-                        commute_mode:       flat.q2 || '',
-                        daily_spend:        flat.q2b || '',
-                        frustrations:       flat.q3 || '',
-                        likelihood:         flat.q4 || '',
-                        trust_factors:      flat.q5 || '',
-                        user_role:          flat.q6 || '',
-                        willing_to_pay:     flat.q7 || '',
-                        open_text:          flat.q8_open_text || ''
-                    });
+            const notConfigured =
+                !GOOGLE_FORMS_ACTION ||
+                !GOOGLE_FORMS_ACTION.includes('/formResponse') ||
+                GOOGLE_FORMS_ACTION.includes('XXXXXXXX');
 
-                if (error) throw error;
-                goTo(6);
-            } catch (err) {
-                console.error('Submission failed:', err);
-                alert('There was an issue submitting. Please try again.');
+            if (notConfigured || !GOOGLE_FORMS_ENTRY_SURVEY || GOOGLE_FORMS_ENTRY_SURVEY.includes('ZZZZ')) {
+                alert(
+                    'Google Form is not configured yet.\n\n' +
+                        'In index.html set GOOGLE_FORMS_ACTION and the entry IDs (see the comment above the constants).'
+                );
                 btn.innerHTML = originalText;
                 btn.style.pointerEvents = 'auto';
                 btn.style.opacity = '1';
+                return;
             }
+
+            const body = buildGoogleFormSurveyBody(flat);
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = GOOGLE_FORMS_ACTION;
+            form.target = 'google-forms-target';
+
+            function addHidden(name, value) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                form.appendChild(input);
+            }
+
+            addHidden('fvv', '1');
+            addHidden('pageHistory', '0');
+            if (GOOGLE_FORMS_FBZX) addHidden('fbzx', GOOGLE_FORMS_FBZX);
+
+            if (GOOGLE_FORMS_ENTRY_CONTACT) {
+                addHidden(GOOGLE_FORMS_ENTRY_CONTACT, flat.contact || '');
+                addHidden(GOOGLE_FORMS_ENTRY_SURVEY, body);
+            } else {
+                addHidden(
+                    GOOGLE_FORMS_ENTRY_SURVEY,
+                    'Contact: ' + (flat.contact || '—') + '\n\n' + body
+                );
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+
+            window.setTimeout(() => {
+                goTo(6);
+                btn.innerHTML = originalText;
+                btn.style.pointerEvents = 'auto';
+                btn.style.opacity = '1';
+            }, 600);
         }
 
         function shareWhatsApp() {
