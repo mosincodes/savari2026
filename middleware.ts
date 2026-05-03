@@ -9,13 +9,10 @@ export const config = {
   /**
    * Supabase SSR bundles code that uses Node-only APIs; Edge middleware on Vercel fails deployment.
    * Node.js middleware is stable in Next.js 15.5+.
+   * Using path-to-regexp compatible simple matchers to avoid ColonToken errors.
    */
   runtime: "nodejs",
-  /*
-   * Next matcher uses path-to-regexp: no capturing groups; avoid `(?:` here — it can throw
-   * "Unhandled type: ColonToken". Flatten file extensions in the negative lookahead instead.
-   */
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.svg$|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.webp$|.*\\.html$).*)",
+    "/((?!_next).*)",
   ],
 };
