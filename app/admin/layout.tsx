@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
+import { requireAdminAccess } from "@/lib/require-profile";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  await requireAdminAccess();
+
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />

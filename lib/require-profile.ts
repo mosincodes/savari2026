@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { isPrivilegedAdmin } from "@/lib/auth/admin-policy";
 import type { User } from "@supabase/supabase-js";
 
 export type ProfileRow = {
@@ -56,4 +57,10 @@ export async function requireOnboardedProfile(): Promise<{
   if (!p.onboarding_completed) redirect("/onboarding");
 
   return { user, profile: p, supabase };
+}
+
+/** Admin UI (app/admin/*): must be signed in and privileged. */
+export async function requireAdminAccess(): Promise<void> {
+  const { user } = await requireUser();
+  if (!(await isPrivilegedAdmin(user.id))) redirect("/");
 }
