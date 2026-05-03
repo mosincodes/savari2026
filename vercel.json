@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "middleware": {
+      "runtime": "nodejs20.x"
+    }
+  }
+}
