@@ -1,9 +1,9 @@
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  // Middleware on Edge Runtime cannot use Node.js APIs (like @supabase/ssr)
-  // Session updates will be handled at the layout level instead
-  return undefined;
+  // Edge Runtime middleware - just pass through requests
+  // Session management is handled at the layout level
+  return NextResponse.next();
 }
 
 export const config = {
