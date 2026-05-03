@@ -6,9 +6,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  /**
-   * Supabase SSR bundles code that uses Node-only APIs; Edge middleware on Vercel fails deployment.
-   * Node.js middleware is stable in Next.js 15.5+.
-   */
   runtime: "nodejs",
 };
