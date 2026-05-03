@@ -1,12 +1,31 @@
 import type { NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
-/** Supabase client pulls `@supabase/realtime-js` etc., which uses Node APIs — incompatible with Edge. */
+/**
+ * Supabase needs Node middleware (full client is not Edge-safe on Vercel).
+ * Matchers below are literal path prefixes with optional `:path*` only — no
+ * regex parentheses, so path-to-regexp on Vercel does not trip over ColonToken.
+ */
 export async function middleware(request: NextRequest) {
   return updateSession(request);
 }
 
 export const config = {
-  /** Omit custom regex here — avoids path-to-regexp / Vercel ColonToken quirks; Node runtime allows full Supabase client. */
   runtime: "nodejs",
+  matcher: [
+    "/",
+    "/login",
+    "/survey",
+    "/verify",
+    "/join/:path*",
+    "/onboarding/:path*",
+    "/dashboard/:path*",
+    "/rides/:path*",
+    "/bookings/:path*",
+    "/profile/:path*",
+    "/admin/:path*",
+    "/admin",
+    "/auth/:path*",
+    "/api/:path*",
+  ],
 };
