@@ -1,5 +1,7 @@
+import { NextResponse } from "next/server";
+
 export function middleware() {
-  // Edge Runtime - no Node.js APIs
+  return NextResponse.next();
 }
 
 export const config = {
