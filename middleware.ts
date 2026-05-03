@@ -1,4 +1,4 @@
-import { type NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
@@ -11,7 +11,11 @@ export const config = {
    * Node.js middleware is stable in Next.js 15.5+.
    */
   runtime: "nodejs",
+  /*
+   * Next matcher uses path-to-regexp: no capturing groups; avoid `(?:` here — it can throw
+   * "Unhandled type: ColonToken". Flatten file extensions in the negative lookahead instead.
+   */
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|html)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.svg$|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.webp$|.*\\.html$).*)",
   ],
 };
