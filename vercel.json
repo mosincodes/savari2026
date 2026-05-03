@@ -1,8 +1,0 @@
-{
-  "functions": {
-    "middleware": {
-      "runtime": "nodejs20.x"
-    }
-  },
-  "buildCommand": "npm run build"
-}

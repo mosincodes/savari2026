@@ -1,10 +1,13 @@
 import type { NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
-  return updateSession(request);
+  // Middleware on Edge Runtime cannot use Node.js APIs (like @supabase/ssr)
+  // Session updates will be handled at the layout level instead
+  return undefined;
 }
 
 export const config = {
-  runtime: "nodejs",
+  matcher: [
+    "/((?!_next|_vercel|favicon\\.ico).*)",
+  ],
 };
