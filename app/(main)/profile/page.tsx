@@ -15,12 +15,17 @@ export default async function ProfilePage() {
   const cnicShown = cnicNorm ? formatCnicDisplay(cnicNorm) : profile.cnic?.trim() || "—";
 
   return (
-    <div className="space-y-6">
-      <h1 className="font-heading text-3xl tracking-tight">Profile</h1>
+    <div className="space-y-8">
+      <header className="space-y-2">
+        <h1 className="font-heading text-4xl tracking-tight">Your profile</h1>
+        <p className="text-muted-foreground text-sm">
+          Verified details we use on rides — update via onboarding if anything looks wrong.
+        </p>
+      </header>
 
-      <Card>
+      <Card className="border-accent/30 bg-gradient-to-r from-accent/5 to-background">
         <CardHeader>
-          <CardTitle className="text-lg">Account</CardTitle>
+          <CardTitle className="text-lg">Account details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
           <p>
