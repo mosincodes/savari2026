@@ -1,0 +1,352 @@
+SAVVARI TERMS OF SERVICE
+Effective Date: [INSERT DATE]
+IMPORTANT NOTICE
+PLEASE READ THESE TERMS OF SERVICE CAREFULLY BEFORE ACCESSING OR USING THE SAVVARI PLATFORM.
+THESE TERMS CONTAIN IMPORTANT PROVISIONS RELATING TO LIABILITY LIMITATIONS, DISCLAIMERS, ASSUMPTION OF RISK, DISPUTE RESOLUTION, RELEASE OF CLAIMS, AND WAIVER OF CERTAIN LEGAL RIGHTS.
+BY CREATING AN ACCOUNT, ACCESSING, OR USING THE PLATFORM, YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTOOD, AND AGREED TO BE BOUND BY THESE TERMS.
+IF YOU DO NOT AGREE TO THESE TERMS, YOU MUST NOT ACCESS OR USE THE PLATFORM.
+
+1. INTRODUCTION
+These Terms of Service (“Terms”) govern your access to and use of the Savvari platform, including the website located at savvari.com, mobile applications, and all related services, features, content, software, communication channels, and technologies (collectively, the “Platform”).
+The Platform is operated by [INSERT LEGAL COMPANY NAME], a company registered under the laws of the Islamic Republic of Pakistan, with its principal office located in Lahore, Punjab, Pakistan (“Savvari”, “we”, “us”, or “our”).
+These Terms constitute a legally binding agreement between you and Savvari.
+
+2. DEFINITIONS
+“User” means any person who accesses or uses the Platform.
+“Driver” means a User who offers available seats in a personal vehicle for a Ride.
+“Passenger” means a User who books or joins a Ride.
+“Ride” means a private, non-commercial, cost-sharing journey arranged between Users through the Platform.
+“Cost Contribution” means the amount paid by a Passenger toward shared trip expenses including fuel, tolls, parking, and similar vehicle operating costs.
+“Service Fee” means any fee charged by Savvari for use of the Platform.
+“CNIC” means the Computerized National Identity Card issued by NADRA.
+“Content” means all information, text, images, ratings, reviews, communications, ride details, and other materials submitted through the Platform.
+
+3. NATURE OF THE PLATFORM
+SAVVARI SOLELY PROVIDES AN ONLINE TECHNOLOGY PLATFORM THAT ENABLES INDEPENDENT USERS TO ARRANGE PRIVATE, NON-COMMERCIAL, COST-SHARING RIDES.
+SAVVARI DOES NOT PROVIDE TRANSPORTATION SERVICES, TAXI SERVICES, DELIVERY SERVICES, LOGISTICS SERVICES, OR VEHICLE OPERATIONS.
+SAVVARI DOES NOT OWN, CONTROL, OPERATE, MANAGE, OR SUPPLY VEHICLES.
+DRIVERS ARE NOT EMPLOYEES, AGENTS, REPRESENTATIVES, CONTRACTORS, PARTNERS, OR AFFILIATES OF SAVVARI.
+ALL RIDES ARE ARRANGED DIRECTLY BETWEEN INDEPENDENT USERS AT THEIR OWN DISCRETION AND RISK.
+Savvari’s role is strictly limited to facilitating user connections, providing communication and matching tools, processing Service Fees, and offering optional safety, verification, and support features.
+Savvari is not a party to any agreement, understanding, or arrangement between Drivers and Passengers.
+
+4. ELIGIBILITY
+To use the Platform, you must:
+	•	be at least 18 years of age;
+	•	possess a valid CNIC;
+	•	possess a valid Pakistani mobile number;
+	•	provide accurate and complete registration information;
+	•	comply with all applicable laws and regulations.
+If registering as a Driver, you additionally represent and warrant that:
+	•	you hold a valid Pakistani driving license appropriate for the vehicle class;
+	•	your vehicle is legally registered;
+	•	your vehicle is roadworthy and maintained in safe operating condition;
+	•	your vehicle is insured as required by applicable law.
+Savvari reserves the right to refuse access to the Platform at its sole discretion.
+
+5. ACCOUNT REGISTRATION AND VERIFICATION
+5.1 Registration
+Users must provide accurate, complete, and current information during registration.
+You are solely responsible for maintaining the confidentiality and security of your account credentials.
+You are responsible for all activities conducted through your account.
+5.2 Verification
+Savvari may conduct verification measures including:
+	•	CNIC verification;
+	•	OTP verification;
+	•	mobile number verification;
+	•	manual review;
+	•	document collection;
+	•	vehicle information review.
+Verification measures reduce risk but do not guarantee safety, identity authenticity, truthfulness, driving ability, criminal background status, or user conduct.
+5.3 One Account Rule
+Each User may maintain only one account unless expressly authorized by Savvari.
+Multiple accounts may result in suspension or termination.
+
+6. USER OBLIGATIONS
+Users agree to:
+	•	comply with all applicable laws;
+	•	provide truthful information;
+	•	behave respectfully toward other Users;
+	•	avoid harassment, abuse, threats, or discrimination;
+	•	avoid fraudulent conduct;
+	•	avoid commercial transport operations through the Platform;
+	•	use the Platform only for lawful purposes.
+Users must not:
+	•	impersonate another person;
+	•	use false identity documents;
+	•	misuse women-only features;
+	•	manipulate ratings or reviews;
+	•	engage in unlawful conduct;
+	•	use the Platform to transport illegal goods or substances;
+	•	carry weapons or hazardous materials during Rides;
+	•	use the Platform while under the influence of drugs or alcohol.
+
+7. RIDES AND COST SHARING
+7.1 Non-Commercial Nature
+All Rides arranged through the Platform are intended strictly for non-commercial cost sharing.
+Drivers must not use the Platform for profit-making transportation services.
+Cost Contributions must reasonably reflect shared trip costs.
+7.2 Driver Obligations
+Drivers are solely responsible for:
+	•	operating vehicles safely;
+	•	complying with traffic laws;
+	•	maintaining valid licensing and insurance;
+	•	ensuring vehicle roadworthiness;
+	•	arriving at agreed pickup locations.
+The Driver listed on the Platform must be the individual operating the vehicle unless explicitly disclosed and accepted by all affected Users.
+7.3 Passenger Obligations
+Passengers must:
+	•	arrive on time;
+	•	wear seatbelts where available;
+	•	behave respectfully;
+	•	avoid distracting the Driver;
+	•	comply with lawful instructions.
+7.4 Cancellations
+Users may cancel Rides subject to Platform policies.
+Repeated cancellations, abuse, or no-shows may result in reduced visibility, suspension, or termination.
+
+8. PAYMENTS AND REFUNDS
+8.1 Service Fees
+Savvari may charge Service Fees for use of the Platform.
+Applicable fees will be displayed before confirmation.
+8.2 Payment Processing
+Payments may be processed through third-party providers including banks, mobile wallets, or payment gateways.
+Savvari does not control third-party payment systems and is not liable for delays, failures, outages, unauthorized access, or processing errors.
+8.3 Refunds
+Refund eligibility shall be determined according to Savvari’s refund policies in effect at the relevant time.
+Refund disputes must be reported within 72 hours of the relevant Ride.
+
+9. SAFETY AND CONDUCT
+Users acknowledge that rides arranged through the Platform involve interactions with independent individuals.
+Users are solely responsible for exercising independent judgment and reasonable caution.
+Savvari encourages Users to:
+	•	verify ride details;
+	•	share trip details with trusted persons;
+	•	use emergency contact features;
+	•	report suspicious activity.
+Savvari reserves the right to investigate complaints and suspend accounts where safety concerns arise.
+
+10. WOMEN-ONLY FEATURE
+The Platform may offer optional women-only ride matching features.
+These features are preference-based matching tools intended to improve user comfort.
+Savvari does not guarantee:
+	•	identity accuracy;
+	•	compatibility;
+	•	conduct;
+	•	safety.
+Misrepresentation of identity or gender information may result in permanent account termination.
+
+11. ASSUMPTION OF RISK
+Users acknowledge that participation in Rides arranged through the Platform involves inherent risks including but not limited to:
+	•	road accidents;
+	•	negligent driving;
+	•	criminal conduct;
+	•	vehicle malfunction;
+	•	theft;
+	•	delays;
+	•	weather conditions;
+	•	third-party actions;
+	•	personal injury;
+	•	death.
+By using the Platform and participating in any Ride, Users voluntarily and knowingly assume all such risks to the fullest extent permitted by law.
+
+12. RELEASE OF CLAIMS
+To the maximum extent permitted by law, Users release and discharge Savvari, its founders, directors, officers, employees, affiliates, contractors, and agents from any and all claims, liabilities, damages, losses, actions, or causes of action arising from or related to:
+	•	Rides arranged through the Platform;
+	•	interactions between Users;
+	•	injuries or death;
+	•	vehicle incidents;
+	•	property loss or damage;
+	•	criminal acts of third parties;
+	•	disputes between Users.
+
+13. DISCLAIMERS
+THE PLATFORM IS PROVIDED ON AN “AS IS” AND “AS AVAILABLE” BASIS.
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, SAVVARI DISCLAIMS ALL WARRANTIES, EXPRESS, IMPLIED, OR STATUTORY.
+Savvari does not guarantee:
+	•	ride safety;
+	•	user conduct;
+	•	identity accuracy;
+	•	uninterrupted Platform availability;
+	•	vehicle condition;
+	•	route accuracy;
+	•	criminal background status;
+	•	successful ride completion.
+Verification procedures and safety measures reduce risk but cannot eliminate risk.
+
+14. LIMITATION OF LIABILITY
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, SAVVARI SHALL NOT BE LIABLE FOR:
+	•	accidents;
+	•	injuries;
+	•	death;
+	•	property damage;
+	•	theft;
+	•	fraud;
+	•	criminal conduct;
+	•	delays;
+	•	service interruptions;
+	•	user disputes;
+	•	vehicle defects;
+	•	third-party actions.
+IN NO EVENT SHALL SAVVARI’S TOTAL AGGREGATE LIABILITY EXCEED THE LESSER OF:
+	•	THE TOTAL SERVICE FEES PAID BY THE USER TO SAVVARI DURING THE THREE (3) MONTHS PRECEDING THE CLAIM; OR
+	•	PKR 10,000.
+
+15. INSURANCE
+Savvari does not provide transportation insurance or personal accident insurance.
+Drivers are solely responsible for maintaining legally required vehicle insurance.
+Passengers participate in Rides at their own risk.
+
+16. OFFLINE INTERACTIONS
+Users acknowledge that interactions may occur outside the Platform after Users are connected.
+Savvari is not responsible for:
+	•	off-platform communications;
+	•	privately modified trips;
+	•	independent arrangements between Users;
+	•	offline conduct.
+
+17. THIRD-PARTY SERVICES
+The Platform may rely upon third-party services including:
+	•	payment processors;
+	•	mapping providers;
+	•	telecommunications services;
+	•	analytics providers;
+	•	cloud infrastructure providers;
+	•	messaging platforms.
+Savvari is not responsible for failures, outages, inaccuracies, delays, or security issues caused by third-party services.
+
+18. LOCATION SERVICES DISCLAIMER
+Location information, maps, estimated arrival times, and route information are approximate only.
+Users remain solely responsible for navigation decisions, compliance with traffic laws, and verification of locations.
+
+19. USER CONTENT
+Users may submit Content through the Platform.
+Users retain ownership of their Content but grant Savvari a worldwide, non-exclusive, royalty-free, transferable license to use, reproduce, store, display, modify, and distribute such Content for purposes relating to operation, improvement, security, support, analytics, and marketing of the Platform.
+Savvari may remove Content at its discretion.
+
+20. FRAUD AND MISUSE
+Savvari reserves the right to investigate, suspend, terminate, report, or pursue legal action against Users suspected of:
+	•	fraud;
+	•	fake bookings;
+	•	payment abuse;
+	•	harassment;
+	•	identity misuse;
+	•	impersonation;
+	•	unlawful conduct;
+	•	misuse of Platform features.
+Savvari may cooperate with law enforcement authorities where required or reasonably necessary.
+
+21. ACCOUNT SUSPENSION AND TERMINATION
+Savvari may suspend or terminate accounts immediately without notice where:
+	•	these Terms are violated;
+	•	safety concerns arise;
+	•	fraud is suspected;
+	•	unlawful conduct is detected;
+	•	repeated complaints are received.
+Users may close their accounts at any time.
+Termination does not eliminate obligations or liabilities accrued prior to termination.
+
+22. DATA RETENTION
+Savvari may retain account information, ride history, verification records, communications, and transaction data for:
+	•	legal compliance;
+	•	fraud prevention;
+	•	dispute resolution;
+	•	safety investigations;
+	•	operational purposes.
+Data may continue to be retained after account deletion where legally permitted.
+
+23. ELECTRONIC COMMUNICATIONS
+By using the Platform, Users consent to receive communications electronically including:
+	•	email;
+	•	SMS;
+	•	WhatsApp messages;
+	•	push notifications;
+	•	in-app messages.
+These communications may include:
+	•	verification requests;
+	•	ride updates;
+	•	legal notices;
+	•	payment confirmations;
+	•	promotional communications;
+	•	safety alerts.
+Users may opt out of promotional communications where legally permitted.
+
+24. INTELLECTUAL PROPERTY
+All intellectual property rights relating to the Platform belong to Savvari or its licensors.
+Users may not:
+	•	copy;
+	•	modify;
+	•	distribute;
+	•	reverse engineer;
+	•	reproduce;
+	•	create derivative works;
+without prior written authorization.
+
+25. INDEMNIFICATION
+Users agree to indemnify, defend, and hold harmless Savvari and its affiliates from any claims, damages, liabilities, losses, costs, or expenses arising from:
+	•	use of the Platform;
+	•	participation in Rides;
+	•	violation of these Terms;
+	•	violation of laws;
+	•	disputes with other Users.
+
+26. DISPUTE RESOLUTION
+26.1 Informal Resolution
+Parties agree to first attempt good-faith resolution through direct communication.
+26.2 Jurisdiction
+Any disputes arising from these Terms shall be subject to the exclusive jurisdiction of the courts of Lahore, Punjab, Pakistan.
+26.3 Governing Law
+These Terms shall be governed by the laws of the Islamic Republic of Pakistan.
+
+27. CLASS ACTION WAIVER
+Users agree that claims against Savvari may only be brought individually and not as part of any class action, collective action, or representative proceeding.
+
+28. SECURITY DISCLAIMER
+While Savvari implements reasonable security measures, no system or online platform can be guaranteed completely secure.
+Users acknowledge the inherent risks associated with digital communications and internet-based services.
+
+29. AVAILABILITY
+Savvari does not guarantee uninterrupted or error-free operation of the Platform.
+The Platform may become unavailable due to:
+	•	maintenance;
+	•	outages;
+	•	cyberattacks;
+	•	internet failures;
+	•	force majeure events;
+	•	third-party failures.
+
+30. MODIFICATIONS
+Savvari may modify these Terms at any time.
+Updated Terms shall become effective upon posting unless otherwise specified.
+Continued use of the Platform after updates constitutes acceptance of revised Terms.
+
+31. SURVIVAL
+Provisions relating to:
+	•	liability limitations;
+	•	disclaimers;
+	•	indemnification;
+	•	dispute resolution;
+	•	intellectual property;
+	•	data retention;
+	•	payment obligations;
+shall survive termination of these Terms.
+
+32. GENERAL PROVISIONS
+Severability
+If any provision is found unenforceable, the remaining provisions shall remain in effect.
+No Waiver
+Failure to enforce any provision shall not constitute waiver.
+Assignment
+Users may not assign rights under these Terms.
+Savvari may assign rights or obligations without restriction.
+Force Majeure
+Savvari shall not be liable for delays or failures caused by events beyond reasonable control.
+Language
+These Terms are drafted in English.
+In case of translation conflicts, the English version shall prevail.
+
+33. CONTACT INFORMATION
+For legal, compliance, or support inquiries:
+Email: legal@savvari.com
+WhatsApp: [INSERT NUMBER]
+Address: [INSERT REGISTERED ADDRESS], Lahore, Punjab, Pakistan

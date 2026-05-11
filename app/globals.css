@@ -209,6 +209,20 @@
     background-repeat: repeat, no-repeat;
   }
 
+  /* Homepage hero backdrop — dotted grid fades into vignette */
+  .bg-grid-fade {
+    background-image:
+      radial-gradient(circle at 1px 1px, hsl(220 10% 40% / 0.065) 1px, transparent 0),
+      linear-gradient(to bottom, transparent 58%, hsl(220 24% 98%)),
+      linear-gradient(180deg, transparent 48%, hsl(220 31% 48% / 0.046));
+    background-size:
+      24px 24px,
+      100% 100%,
+      100% 100%;
+    mask-image: radial-gradient(ellipse 80% 72% at 50% -8%, black 52%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 72% at 50% -8%, black 52%, transparent 100%);
+  }
+
   /* Focus rings for keyboard users */
   .focus-ring {
     @apply outline-none ring-offset-2 ring-offset-background ring-ring focus-visible:ring-2 focus-visible:border-transparent;

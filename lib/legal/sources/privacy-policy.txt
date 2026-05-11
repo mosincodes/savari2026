@@ -1,0 +1,277 @@
+SAVVARI PRIVACY POLICY
+Effective Date: [INSERT DATE]
+IMPORTANT NOTICE
+PLEASE READ THIS PRIVACY POLICY CAREFULLY BEFORE USING THE SAVVARI PLATFORM.
+BY ACCESSING OR USING THE PLATFORM, CREATING AN ACCOUNT, OR PROVIDING PERSONAL INFORMATION, YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTOOD, AND AGREED TO THE COLLECTION, USE, DISCLOSURE, STORAGE, AND PROCESSING OF YOUR INFORMATION AS DESCRIBED IN THIS PRIVACY POLICY.
+IF YOU DO NOT AGREE WITH THIS PRIVACY POLICY, YOU MUST NOT USE THE PLATFORM.
+
+1. INTRODUCTION
+This Privacy Policy explains how Savvari (“Savvari”, “we”, “our”, or “us”) collects, uses, stores, processes, shares, protects, and retains personal information when Users access or use the Savvari platform, including the website, mobile applications, communication channels, and related services (collectively, the “Platform”).
+Savvari is operated by [INSERT LEGAL COMPANY NAME], a company registered under the laws of the Islamic Republic of Pakistan with its principal office located in Lahore, Punjab, Pakistan.
+This Privacy Policy should be read together with the Terms of Service and Community Guidelines.
+
+2. INFORMATION WE COLLECT
+We collect information directly from Users, automatically through use of the Platform, and from third-party service providers.
+2.1 Information You Provide
+Depending on how you use the Platform, we may collect:
+	•	full legal name;
+	•	CNIC number;
+	•	date of birth;
+	•	gender information;
+	•	mobile phone number;
+	•	WhatsApp-enabled number;
+	•	email address;
+	•	profile photograph;
+	•	vehicle details including make, model, color, registration number, and vehicle photographs;
+	•	driver license information;
+	•	emergency contact details;
+	•	ride preferences;
+	•	route information;
+	•	pickup and destination locations;
+	•	schedule preferences;
+	•	ratings and reviews;
+	•	support requests and communications;
+	•	free-text descriptions and notes;
+	•	verification documents.
+2.2 Information Collected Automatically
+When you use the Platform, we may automatically collect:
+	•	device identifiers;
+	•	operating system information;
+	•	browser type;
+	•	IP address;
+	•	app version;
+	•	language preferences;
+	•	approximate geographic location;
+	•	GPS and live location data where permissions are granted;
+	•	ride history and trip metadata;
+	•	timestamps;
+	•	usage behavior;
+	•	crash logs;
+	•	diagnostics data;
+	•	cookies and similar technologies;
+	•	analytics information.
+2.3 Information from Third Parties
+We may receive information from:
+	•	payment processors;
+	•	mobile wallet providers;
+	•	analytics providers;
+	•	cloud infrastructure providers;
+	•	communication service providers;
+	•	fraud prevention vendors;
+	•	verification service providers.
+We do not collect or store:
+	•	banking PINs;
+	•	mobile wallet PINs;
+	•	full payment card information.
+
+3. HOW WE USE INFORMATION
+We may use personal information for the following purposes:
+	•	creating and managing accounts;
+	•	verifying identities;
+	•	matching Drivers and Passengers;
+	•	facilitating ride coordination and communication;
+	•	processing payments and Service Fees;
+	•	improving safety features;
+	•	responding to emergencies and SOS alerts;
+	•	sharing ride information with emergency contacts where necessary;
+	•	enforcing Terms of Service and Community Guidelines;
+	•	detecting fraud, abuse, suspicious activity, or illegal conduct;
+	•	investigating complaints and disputes;
+	•	improving Platform functionality and performance;
+	•	performing analytics and research;
+	•	personalizing user experience;
+	•	communicating updates, confirmations, notices, and support responses;
+	•	complying with legal obligations;
+	•	protecting the rights, safety, and security of Users and Savvari.
+Savvari may also use anonymized and aggregated information for analytics, operational, statistical, business, and marketing purposes.
+
+4. LEGAL BASIS FOR PROCESSING
+By using the Platform, Users consent to the collection and processing of personal information as described in this Privacy Policy.
+Savvari processes personal information where necessary for:
+	•	providing Platform services;
+	•	identity verification;
+	•	safety and fraud prevention;
+	•	contractual obligations;
+	•	legitimate business operations;
+	•	legal compliance;
+	•	enforcement of legal rights.
+Where consent is required by applicable law, Users may withdraw consent subject to operational and legal limitations.
+
+5. CNIC AND SENSITIVE DATA HANDLING
+CNIC information is treated as sensitive personal data.
+5.1 Purpose of Collection
+CNIC information is collected for:
+	•	identity verification;
+	•	fraud prevention;
+	•	safety enhancement;
+	•	trust and community integrity;
+	•	compliance with applicable laws.
+5.2 Storage and Protection
+Sensitive information may be encrypted during transmission and storage.
+Access is restricted to authorized personnel who require such access for operational, safety, compliance, fraud prevention, or legal purposes.
+5.3 Disclosure Restrictions
+Savvari does not publicly display or share Users’ CNIC numbers with other Users.
+We may disclose CNIC information:
+	•	where legally required;
+	•	pursuant to lawful requests from authorities;
+	•	to protect safety, rights, or property;
+	•	to investigate fraud or criminal activity.
+5.4 Retention
+Sensitive verification data may be retained after account closure where necessary for:
+	•	legal compliance;
+	•	fraud prevention;
+	•	dispute resolution;
+	•	law enforcement cooperation;
+	•	safety investigations.
+
+6. LOCATION DATA
+The Platform may collect precise or approximate location information when Users grant location permissions.
+Location information may be used for:
+	•	ride matching;
+	•	route optimization;
+	•	trip coordination;
+	•	estimated arrival calculations;
+	•	emergency and safety features;
+	•	fraud detection;
+	•	analytics.
+Users may disable location permissions through device settings, but some Platform features may become unavailable or function improperly.
+Savvari does not guarantee continuous accuracy or availability of location data.
+
+7. INFORMATION SHARING
+Savvari may share information in the following circumstances:
+7.1 Sharing with Other Users
+When Users participate in a Ride, limited information may be shared with matched Users including:
+	•	first name and profile information;
+	•	profile photograph;
+	•	ratings and reviews;
+	•	vehicle information;
+	•	pickup and drop-off details;
+	•	contact information where necessary for ride coordination.
+Savvari does not publicly share CNIC numbers, emergency contacts, or private verification records with other Users.
+7.2 Service Providers
+We may share information with third-party service providers assisting with:
+	•	cloud hosting;
+	•	infrastructure;
+	•	analytics;
+	•	communication delivery;
+	•	customer support;
+	•	payment processing;
+	•	fraud prevention;
+	•	security operations.
+Such providers may process information on our behalf subject to contractual or operational protections.
+7.3 Legal and Safety Disclosures
+Savvari may disclose information where reasonably necessary to:
+	•	comply with applicable law;
+	•	comply with court orders or legal process;
+	•	cooperate with law enforcement;
+	•	investigate fraud or illegal conduct;
+	•	enforce legal rights;
+	•	prevent harm or safety threats.
+7.4 Business Transfers
+If Savvari undergoes a merger, acquisition, restructuring, financing, investment transaction, or asset sale, personal information may be transferred as part of that transaction.
+7.5 Aggregated and Anonymized Data
+Savvari may use, publish, or share aggregated or anonymized information that cannot reasonably identify individual Users.
+
+8. DATA SECURITY
+Savvari implements commercially reasonable technical, administrative, and organizational safeguards designed to protect personal information.
+Security measures may include:
+	•	encryption technologies;
+	•	access controls;
+	•	authentication systems;
+	•	infrastructure monitoring;
+	•	logging and auditing;
+	•	limited personnel access;
+	•	security reviews.
+However, no platform, application, transmission method, or storage system can be guaranteed completely secure.
+Users acknowledge and accept the inherent risks associated with internet-based services and digital communications.
+Users are responsible for maintaining the confidentiality of their account credentials and devices.
+
+9. DATA RETENTION
+Savvari retains information for as long as reasonably necessary for:
+	•	providing services;
+	•	legal compliance;
+	•	dispute resolution;
+	•	fraud prevention;
+	•	security purposes;
+	•	enforcement of legal rights;
+	•	operational needs.
+Retention periods may vary depending on data category, legal requirements, operational needs, and security considerations.
+Even after account deletion requests, certain information may continue to be retained where legally permitted or required.
+Anonymized information may be retained indefinitely.
+
+10. YOUR RIGHTS AND CHOICES
+Subject to applicable law, Users may have the right to:
+	•	access personal information;
+	•	correct inaccurate information;
+	•	request deletion of information;
+	•	withdraw consent for optional processing;
+	•	object to certain uses of information;
+	•	request account closure.
+Certain requests may be denied where:
+	•	retention is legally required;
+	•	fraud prevention requires retention;
+	•	safety investigations are ongoing;
+	•	disputes remain unresolved;
+	•	compliance obligations exist.
+Requests may be submitted to privacy@savvari.com.
+Savvari may require identity verification before processing requests.
+
+11. COOKIES, ANALYTICS, AND TRACKING TECHNOLOGIES
+The Platform may use:
+	•	cookies;
+	•	SDKs;
+	•	pixels;
+	•	analytics tools;
+	•	local storage technologies;
+	•	session identifiers.
+These technologies may be used for:
+	•	authentication;
+	•	functionality;
+	•	remembering preferences;
+	•	analytics;
+	•	fraud prevention;
+	•	performance optimization;
+	•	operational monitoring.
+Users may disable certain tracking technologies through browser or device settings, though Platform functionality may become limited.
+
+12. MARKETING COMMUNICATIONS
+Savvari may send:
+	•	promotional messages;
+	•	offers;
+	•	feature announcements;
+	•	newsletters;
+	•	updates.
+Users may opt out of marketing communications where applicable.
+Operational, transactional, safety-related, and legal communications may still be sent even if marketing preferences are disabled.
+
+13. CHILDREN AND MINORS
+The Platform is intended solely for persons aged 18 years or older.
+Savvari does not knowingly permit minors to create accounts.
+If we become aware that personal information belonging to a minor has been collected, we may suspend the account and delete associated information where appropriate.
+
+14. INTERNATIONAL PROCESSING AND STORAGE
+Information may be processed or stored using infrastructure located inside or outside Pakistan.
+By using the Platform, Users acknowledge and consent to cross-border processing, transfer, storage, and handling of information where operationally necessary.
+
+15. THIRD-PARTY LINKS AND SERVICES
+The Platform may contain links to third-party websites, services, or applications.
+Savvari does not control and is not responsible for the privacy practices, security, or content of third-party services.
+Users interact with third-party services at their own risk.
+
+16. NO GUARANTEE OF ABSOLUTE PRIVACY OR SECURITY
+While Savvari takes reasonable precautions to protect information, no method of electronic transmission, storage, or processing can guarantee absolute privacy or security.
+Savvari disclaims liability for unauthorized access, hacking, cyberattacks, data breaches, technical failures, or security incidents except where prohibited by applicable law.
+
+17. CHANGES TO THIS PRIVACY POLICY
+Savvari may modify this Privacy Policy from time to time.
+Updated versions become effective upon posting unless otherwise stated.
+Material changes may be communicated through:
+	•	email;
+	•	in-app notifications;
+	•	Platform announcements.
+Continued use of the Platform after updates constitutes acknowledgment of the revised Privacy Policy.
+
+18. CONTACT INFORMATION
+For privacy, compliance, or data-related inquiries:
+Email: privacy@savvari.com
+Address: [INSERT REGISTERED ADDRESS], Lahore, Punjab, Pakistan
