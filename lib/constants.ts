@@ -1,4 +1,4 @@
-/** Lahore area list — same as commuter survey / product plan */
+/** Lahore area list — commuter survey aligned */
 export const LAHORE_AREAS = [
   "DHA / Defence",
   "Gulberg / Garden Town",
@@ -11,7 +11,10 @@ export const LAHORE_AREAS = [
   "Wapda Town",
   "Gulberg / Mall Road",
   "IT Tower / Arfa Karim",
-  "University (LUMS / UET / UMT / FAST)",
+  "LUMS (DHA)",
+  "UET (GT Road)",
+  "UMT (Johar Town)",
+  "FAST (Faisal Town)",
   "Cantt / Fortress Stadium",
   "Other",
 ] as const;
@@ -19,6 +22,7 @@ export const LAHORE_AREAS = [
 export type LahoreArea = (typeof LAHORE_AREAS)[number];
 
 export const WEEKDAYS = [
+  { id: "Sun", label: "Sunday" },
   { id: "Mon", label: "Monday" },
   { id: "Tue", label: "Tuesday" },
   { id: "Wed", label: "Wednesday" },
@@ -26,6 +30,18 @@ export const WEEKDAYS = [
   { id: "Fri", label: "Friday" },
   { id: "Sat", label: "Saturday" },
 ] as const;
+
+/** Normalize — return 13 digits only if valid CNIC numeric string */
+export function normalizeCnicDigits(input: string): string | null {
+  const d = input.replace(/\D/g, "");
+  return d.length === 13 ? d : null;
+}
+
+/** Format 13-digit CNIC as XXXXX-XXXXXXX-X */
+export function formatCnicDisplay(normalizedDigits: string): string {
+  if (normalizedDigits.length !== 13) return normalizedDigits;
+  return `${normalizedDigits.slice(0, 5)}-${normalizedDigits.slice(5, 12)}-${normalizedDigits.slice(12)}`;
+}
 
 /** Pakistani mobile: 03XXXXXXXXX (11 digits) */
 export const PK_PHONE_REGEX = /^03\d{9}$/;

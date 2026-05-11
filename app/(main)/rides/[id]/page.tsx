@@ -42,7 +42,12 @@ export default async function RideDetailPage({ params }: { params: Promise<{ id:
             {ride.from_area} → {ride.to_area}
           </h1>
           <p className="text-muted-foreground mt-1 text-sm">
-            Departs {String(ride.departure_time).slice(0, 5)} · {ride.days?.join(", ")}
+            Departs {String(ride.departure_time).slice(0, 5)}
+            {ride.return_time
+              ? ` · Returns ${String(ride.return_time).slice(0, 5)}`
+              : ""}
+            {" · "}
+            {ride.days?.join(", ")}
           </p>
           {ride.meeting_point ? (
             <p className="mt-2 text-sm">

@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { onboardingSchema } from "@/lib/validations";
-import { normalizeLocalPkPhone, toE164Pakistan } from "@/lib/constants";
+import { toE164Pakistan } from "@/lib/constants";
 import type { OnboardingState } from "@/lib/types/form-states";
 import type { User } from "@supabase/supabase-js";
 import { revalidateProfileAffected } from "@/lib/services/revalidate-tags";
@@ -9,18 +9,15 @@ import { revalidateProfileAffected } from "@/lib/services/revalidate-tags";
 export async function completeOnboardingForUser(user: User, formData: FormData): Promise<OnboardingState> {
   const supabase = await createClient();
 
-  const emergencyRaw = (formData.get("emergency_contact_phone") as string) || "";
-  const emergency =
-    emergencyRaw.trim() === "" ? "" : normalizeLocalPkPhone(emergencyRaw) || "";
-
   const raw = {
     full_name: formData.get("full_name"),
-    cnic_last4: formData.get("cnic_last4"),
+    cnic: formData.get("cnic"),
     role: formData.get("role"),
+    gender: formData.get("gender"),
     vehicle_make_model: formData.get("vehicle_make_model") || "",
     vehicle_color: formData.get("vehicle_color") || "",
     vehicle_plate: formData.get("vehicle_plate") || "",
-    emergency_contact_phone: emergency || "",
+    emergency_contact_phone: ((formData.get("emergency_contact_phone") as string) || "").trim(),
   };
 
   const parsed = onboardingSchema.safeParse(raw);
@@ -34,10 +31,11 @@ export async function completeOnboardingForUser(user: User, formData: FormData):
     .from("profiles")
     .update({
       full_name: d.full_name,
-      cnic_last4: d.cnic_last4,
+      cnic: d.cnic,
       role: d.role,
+      gender: d.gender,
       phone: user.phone ?? undefined,
-      emergency_contact_phone: d.emergency_contact_phone ? toE164Pakistan(d.emergency_contact_phone) : null,
+      emergency_contact_phone: toE164Pakistan(d.emergency_contact_phone),
       onboarding_completed: true,
       updated_at: new Date().toISOString(),
     })

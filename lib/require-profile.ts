@@ -8,7 +8,8 @@ export type ProfileRow = {
   id: string;
   full_name: string | null;
   phone: string | null;
-  cnic_last4: string | null;
+  cnic: string | null;
+  gender: string | null;
   role: string;
   onboarding_completed: boolean;
   is_admin: boolean;

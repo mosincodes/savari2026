@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 import { JoinPassengerForm } from "@/components/forms/join-passenger-form";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -37,6 +38,7 @@ export default function JoinPassengerPage() {
             </Link>
           </div>
         </main>
+        <SiteFooter />
       </div>
     );
   }
@@ -47,6 +49,7 @@ export default function JoinPassengerPage() {
       <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10 sm:py-14">
         <JoinPassengerForm onSuccess={() => setDone(true)} />
       </main>
+      <SiteFooter />
     </div>
   );
 }

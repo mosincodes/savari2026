@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Savvari · Commuter Survey</title>
+    <meta property="og:title" content="Savvari · Commuter Survey (Lahore)" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:description"
+      content="4-minute commuter research for Lahore. Reach us via WhatsApp (03…) or email; answers are saved securely."
+    />
+    <meta name="twitter:card" content="summary" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -289,8 +296,15 @@
             <div class="divider"></div>
             <h2 class="q-text" style="font-size: clamp(1.3rem, 3vw, 1.6rem);">Before we begin — how can we reach you?</h2>
             <p class="q-sub" style="margin-bottom: 20px;">We'll only contact you when Savvari launches in your area. No spam, ever.</p>
-            <input class="text-input" id="q0-contact" type="email" autocomplete="email" placeholder="Email address" />
-            <p class="input-error" id="q0-error">Please enter your email to continue.</p>
+            <input
+                class="text-input"
+                id="q0-contact"
+                type="text"
+                inputmode="text"
+                autocomplete="email"
+                placeholder="Email or Pakistani WhatsApp (03XXXXXXXXX)"
+            />
+            <p class="input-error" id="q0-error">Enter your WhatsApp (03…) or email to continue.</p>
             <div class="btn-row" style="margin-top: 16px;">
                 <button class="btn-primary accent" onclick="startSurvey()">
                     Begin Survey
@@ -326,7 +340,10 @@
                 <label class="opt"><input type="radio" name="q1b" value="DHA"><span class="opt-marker"></span><span class="opt-label">DHA / Defence</span></label>
                 <label class="opt"><input type="radio" name="q1b" value="Johar Town"><span class="opt-marker"></span><span class="opt-label">Johar Town / Valencia</span></label>
                 <label class="opt"><input type="radio" name="q1b" value="IT Tower / Arfa Karim"><span class="opt-marker"></span><span class="opt-label">IT Tower / Arfa Karim</span></label>
-                <label class="opt"><input type="radio" name="q1b" value="University"><span class="opt-marker"></span><span class="opt-label">University (LUMS / UET / UMT / FAST)</span></label>
+                <label class="opt"><input type="radio" name="q1b" value="LUMS (DHA)"><span class="opt-marker"></span><span class="opt-label">LUMS (DHA)</span></label>
+                <label class="opt"><input type="radio" name="q1b" value="UET (GT Road)"><span class="opt-marker"></span><span class="opt-label">UET (GT Road)</span></label>
+                <label class="opt"><input type="radio" name="q1b" value="UMT (Johar Town)"><span class="opt-marker"></span><span class="opt-label">UMT (Johar Town)</span></label>
+                <label class="opt"><input type="radio" name="q1b" value="FAST (Faisal Town)"><span class="opt-marker"></span><span class="opt-label">FAST (Faisal Town)</span></label>
                 <label class="opt"><input type="radio" name="q1b" value="Cantt"><span class="opt-marker"></span><span class="opt-label">Cantt / Fortress Stadium</span></label>
                 <label class="opt"><input type="radio" name="q1b" value="Lake City"><span class="opt-marker"></span><span class="opt-label">Lake City</span></label>
                 <label class="opt"><input type="radio" name="q1b" value="Bahria"><span class="opt-marker"></span><span class="opt-label">Bahria Town / Paragon</span></label>
@@ -490,6 +507,23 @@
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s || '').trim());
         }
 
+        /** Match server-side Pakistani mobile normalization (see lib/constants normalizeLocalPkPhone). */
+        function normalizePkLocal(contact) {
+            let d = (contact || '').replace(/\D/g, '');
+            if (d.length === 11 && d.startsWith('03')) return d;
+            if (d.length === 12 && d.startsWith('923')) return `0${d.slice(3)}`;
+            if (d.length === 10 && d.startsWith('3')) return `0${d}`;
+            return d;
+        }
+
+        function isValidSurveyContact(raw) {
+            const t = (raw || '').trim();
+            if (!t) return false;
+            if (contactLooksLikeEmail(t)) return true;
+            const d = normalizePkLocal(t);
+            return d.length === 11 && /^03\d{9}$/.test(d);
+        }
+
         const TOTAL = 5;
         let answers = {};
 
@@ -499,19 +533,18 @@
             const contactInput = document.getElementById('q0-contact');
             const contact = contactInput.value.trim();
             const errorEl = document.getElementById('q0-error');
-            
+
             if (!contact) {
                 contactInput.classList.add('error');
-                errorEl.textContent = 'Please enter your email to continue.';
+                errorEl.textContent = 'Enter your WhatsApp (03…) or email to continue.';
                 errorEl.classList.add('visible');
                 contactInput.focus();
                 return;
             }
 
-            if (GOOGLE_FORMS_ENTRY_CONTACT === 'emailAddress' && !contactLooksLikeEmail(contact)) {
+            if (!isValidSurveyContact(contact)) {
                 contactInput.classList.add('error');
-                errorEl.textContent =
-                    'This survey is linked to a Google Form that requires an email address. Enter a valid email, or change that form field to Short answer in Google Forms.';
+                errorEl.textContent = 'Enter a Pakistani WhatsApp (03XXXXXXXXX) or a valid email address.';
                 errorEl.classList.add('visible');
                 contactInput.focus();
                 return;
@@ -519,7 +552,7 @@
 
             contactInput.classList.remove('error');
             errorEl.classList.remove('visible');
-            answers.contact = contact;
+            answers.contact = contactLooksLikeEmail(contact) ? contact.toLowerCase().trim() : normalizePkLocal(contact);
             goTo(1);
         }
 
@@ -569,7 +602,14 @@
             return lines.map(([k, v]) => k + ': ' + (v || '—')).join('\n');
         }
 
-        function submitSurvey() {
+        function restoreSurveySubmitBtn(btn, html) {
+            if (!btn) return;
+            btn.innerHTML = html;
+            btn.style.pointerEvents = 'auto';
+            btn.style.opacity = '1';
+        }
+
+        async function submitSurvey() {
             answers.q8_open_text = document.getElementById('q8-text').value;
             if (answers.q1 === 'Other') answers.q1_other = document.getElementById('q1-other').value;
             if (answers.q1b === 'Other') answers.q1b_other = document.getElementById('q1b-other').value;
@@ -585,19 +625,41 @@
             btn.style.pointerEvents = 'none';
             btn.style.opacity = '0.6';
 
+            let contactTrim = typeof answers.contact === 'string' ? answers.contact.trim() : '';
+            if (!contactTrim) {
+                alert('No contact saved. Go back to the first screen and enter WhatsApp or email.');
+                restoreSurveySubmitBtn(btn, originalText);
+                return;
+            }
+            const contactForApi = contactLooksLikeEmail(contactTrim) ? contactTrim.toLowerCase().trim() : normalizePkLocal(contactTrim);
+
+            try {
+                const apiRes = await fetch(new URL('/api/survey', window.location.origin).toString(), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contact: contactForApi, answers }),
+                });
+                const apiBody = await apiRes.json().catch(() => ({}));
+                if (!apiRes.ok) {
+                    throw new Error(apiBody.error || apiBody.message || 'Could not save your survey.');
+                }
+            } catch (e) {
+                alert(e.message || 'Could not reach Savvari — check your connection and try again.');
+                restoreSurveySubmitBtn(btn, originalText);
+                return;
+            }
+
             const notConfigured =
                 !GOOGLE_FORMS_ACTION ||
                 !GOOGLE_FORMS_ACTION.includes('/formResponse') ||
                 GOOGLE_FORMS_ACTION.includes('XXXXXXXX');
+            const badGoogleEntry =
+                !GOOGLE_FORMS_ENTRY_SURVEY || GOOGLE_FORMS_ENTRY_SURVEY.includes('ZZZZ');
 
-            if (notConfigured || !GOOGLE_FORMS_ENTRY_SURVEY || GOOGLE_FORMS_ENTRY_SURVEY.includes('ZZZZ')) {
-                alert(
-                    'Google Form is not configured yet.\n\n' +
-                        'In index.html set GOOGLE_FORMS_ACTION and the entry IDs (see the comment above the constants).'
-                );
-                btn.innerHTML = originalText;
-                btn.style.pointerEvents = 'auto';
-                btn.style.opacity = '1';
+            if (notConfigured || badGoogleEntry) {
+                alert('Thank you — your responses were saved securely.');
+                goTo(6);
+                restoreSurveySubmitBtn(btn, originalText);
                 return;
             }
 
@@ -623,10 +685,7 @@
                 addHidden(GOOGLE_FORMS_ENTRY_CONTACT, flat.contact || '');
                 addHidden(GOOGLE_FORMS_ENTRY_SURVEY, body);
             } else {
-                addHidden(
-                    GOOGLE_FORMS_ENTRY_SURVEY,
-                    'Contact: ' + (flat.contact || '—') + '\n\n' + body
-                );
+                addHidden(GOOGLE_FORMS_ENTRY_SURVEY, 'Contact: ' + (flat.contact || '—') + '\n\n' + body);
             }
 
             document.body.appendChild(form);
@@ -635,9 +694,7 @@
 
             window.setTimeout(() => {
                 goTo(6);
-                btn.innerHTML = originalText;
-                btn.style.pointerEvents = 'auto';
-                btn.style.opacity = '1';
+                restoreSurveySubmitBtn(btn, originalText);
             }, 600);
         }
 

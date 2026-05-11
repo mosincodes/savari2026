@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { submitDriverSignup, type ActionState } from "@/app/actions/signups";
 import { LAHORE_AREAS, WEEKDAYS } from "@/lib/constants";
@@ -18,6 +18,8 @@ const selectClass =
 
 export function JoinDriverForm({ onSuccess }: { onSuccess: () => void }) {
   const [state, formAction, pending] = useActionState(submitDriverSignup, initial);
+  const [routeFrom, setRouteFrom] = useState("");
+  const [routeTo, setRouteTo] = useState("");
 
   useEffect(() => {
     if (state.ok) {
@@ -69,24 +71,28 @@ export function JoinDriverForm({ onSuccess }: { onSuccess: () => void }) {
                 placeholder="03XXXXXXXXX"
                 inputMode="numeric"
                 maxLength={11}
+                pattern="^03\d{9}$"
+                title="Pakistani mobile: 03 followed by 9 digits"
               />
               {fe?.whatsapp_phone?.[0] && (
                 <p className="text-sm text-destructive">{fe.whatsapp_phone[0]}</p>
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="cnic_last4">CNIC last 4 digits</Label>
+              <Label htmlFor="cnic">CNIC number</Label>
               <Input
-                id="cnic_last4"
-                name="cnic_last4"
+                id="cnic"
+                name="cnic"
                 required
-                maxLength={4}
-                inputMode="numeric"
-                placeholder="1234"
+                maxLength={15}
+                inputMode="text"
+                autoComplete="off"
+                placeholder="35201-1234567-1"
               />
-              {fe?.cnic_last4?.[0] && (
-                <p className="text-sm text-destructive">{fe.cnic_last4[0]}</p>
+              {fe?.cnic?.[0] && (
+                <p className="text-sm text-destructive">{fe.cnic[0]}</p>
               )}
+              <p className="text-muted-foreground text-xs">Full 13-digit CNIC — dashes optional.</p>
             </div>
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="car_make_model">Car make &amp; model</Label>
@@ -114,7 +120,14 @@ export function JoinDriverForm({ onSuccess }: { onSuccess: () => void }) {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="route_from">Route from</Label>
-              <select id="route_from" name="route_from" required className={cn(selectClass)}>
+              <select
+                id="route_from"
+                name="route_from"
+                required
+                value={routeFrom}
+                onChange={(e) => setRouteFrom(e.target.value)}
+                className={cn(selectClass)}
+              >
                 <option value="">Select area</option>
                 {LAHORE_AREAS.map((a) => (
                   <option key={a} value={a}>
@@ -128,7 +141,14 @@ export function JoinDriverForm({ onSuccess }: { onSuccess: () => void }) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="route_to">Route to</Label>
-              <select id="route_to" name="route_to" required className={cn(selectClass)}>
+              <select
+                id="route_to"
+                name="route_to"
+                required
+                value={routeTo}
+                onChange={(e) => setRouteTo(e.target.value)}
+                className={cn(selectClass)}
+              >
                 <option value="">Select area</option>
                 {LAHORE_AREAS.map((a) => (
                   <option key={`t-${a}`} value={a}>
@@ -140,15 +160,15 @@ export function JoinDriverForm({ onSuccess }: { onSuccess: () => void }) {
                 <p className="text-sm text-destructive">{fe.route_to[0]}</p>
               )}
             </div>
-            <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="route_from_other">If &quot;Other&quot; — from (specify)</Label>
+            <div className={cn("space-y-2 sm:col-span-2", routeFrom !== "Other" && "hidden")}>
+              <Label htmlFor="route_from_other">Specify departure area</Label>
               <Input id="route_from_other" name="route_from_other" placeholder="Area name" />
               {fe?.route_from_other?.[0] && (
                 <p className="text-sm text-destructive">{fe.route_from_other[0]}</p>
               )}
             </div>
-            <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="route_to_other">If &quot;Other&quot; — to (specify)</Label>
+            <div className={cn("space-y-2 sm:col-span-2", routeTo !== "Other" && "hidden")}>
+              <Label htmlFor="route_to_other">Specify destination area</Label>
               <Input id="route_to_other" name="route_to_other" placeholder="Area name" />
               {fe?.route_to_other?.[0] && (
                 <p className="text-sm text-destructive">{fe.route_to_other[0]}</p>
@@ -158,11 +178,19 @@ export function JoinDriverForm({ onSuccess }: { onSuccess: () => void }) {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="departure_time">Departure time</Label>
+              <Label htmlFor="departure_time">Morning departure</Label>
               <Input id="departure_time" name="departure_time" type="time" required />
               {fe?.departure_time?.[0] && (
                 <p className="text-sm text-destructive">{fe.departure_time[0]}</p>
               )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="return_time">Return / evening commute</Label>
+              <Input id="return_time" name="return_time" type="time" required />
+              {fe?.return_time?.[0] && (
+                <p className="text-sm text-destructive">{fe.return_time[0]}</p>
+              )}
+              <p className="text-muted-foreground text-xs">When you usually head back.</p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="available_seats">Available seats</Label>
@@ -177,7 +205,7 @@ export function JoinDriverForm({ onSuccess }: { onSuccess: () => void }) {
           </div>
 
           <fieldset className="space-y-3">
-            <legend className="text-sm font-medium">Days available (Mon–Sat)</legend>
+            <legend className="text-sm font-medium">Days available · pick at least one</legend>
             <div className="flex flex-wrap gap-4">
               {WEEKDAYS.map((d) => (
                 <label key={d.id} className="flex items-center gap-2 text-sm">

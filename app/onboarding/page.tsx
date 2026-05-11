@@ -47,31 +47,59 @@ export default function OnboardingPage() {
                 <Input id="full_name" name="full_name" required minLength={3} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="cnic_last4">CNIC last 4 digits</Label>
-                <Input id="cnic_last4" name="cnic_last4" required maxLength={4} inputMode="numeric" />
+                <Label htmlFor="cnic">CNIC number</Label>
+                <Input
+                  id="cnic"
+                  name="cnic"
+                  required
+                  placeholder="XXXXX-XXXXXXX-X"
+                  maxLength={19}
+                  autoComplete="off"
+                  title="13-digit CNIC (dashes optional)"
+                />
+                <p className="text-muted-foreground text-xs">All 13 digits — we verify against your signup.</p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="gender">Gender</Label>
+                <select id="gender" name="gender" required className={cn(selectClass)} defaultValue="">
+                  <option value="" disabled>
+                    Select…
+                  </option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="prefer_not_say">Prefer not to say</option>
+                </select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="role">How will you use Savvari?</Label>
                 <select id="role" name="role" required className={cn(selectClass)} defaultValue="both">
                   <option value="passenger">Passenger only</option>
                   <option value="driver">Driver only</option>
-                  <option value="both">Both</option>
+                  <option value="both">Driver &amp; passenger</option>
                 </select>
               </div>
               <div className="space-y-2 rounded-lg border border-dashed border-border p-4">
-                <p className="text-sm font-medium">Vehicle (drivers / both)</p>
-                <Input name="vehicle_make_model" placeholder="Honda Civic 2019" />
+                <p className="text-sm font-medium">Your car</p>
+                <p className="text-muted-foreground text-xs">
+                  Required if you drive or use both modes. Leave blank if you are passenger-only.
+                </p>
+                <Input name="vehicle_make_model" placeholder="Make &amp; model (e.g. Honda Civic 2019)" />
                 <Input name="vehicle_color" placeholder="Color" />
                 <Input name="vehicle_plate" placeholder="Number plate" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="emergency_contact_phone">Emergency contact (optional)</Label>
+                <Label htmlFor="emergency_contact_phone">Emergency contact (WhatsApp-capable)</Label>
                 <Input
                   id="emergency_contact_phone"
                   name="emergency_contact_phone"
-                  placeholder="03XXXXXXXXX for SOS SMS"
+                  required
+                  placeholder="03XXXXXXXXX (not your own signup number)"
                   maxLength={11}
+                  pattern="^03\d{9}$"
+                  inputMode="numeric"
+                  title="11 digits starting with 03"
                 />
+                <p className="text-muted-foreground text-xs">Used only for SOS alerts from active rides.</p>
               </div>
               <Button type="submit" className="rounded-full" disabled={pending}>
                 {pending ? "Saving…" : "Continue"}

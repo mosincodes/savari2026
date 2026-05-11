@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 import { normalizeLocalPkPhone } from "@/lib/constants";
 import { shouldTryPkOtpBypassBeforeOtp } from "@/lib/skip-otp-bypass";
 import { toast } from "sonner";
@@ -82,7 +83,10 @@ function LoginForm() {
     <Card>
       <CardHeader>
         <CardTitle className="font-heading text-2xl">Log in</CardTitle>
-        <CardDescription>We’ll send a one-time code to your WhatsApp / SMS.</CardDescription>
+        <CardDescription>
+          We verify your number with a one-time code delivered by SMS first; WhatsApp may be used depending on
+          your carrier and our messaging setup.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
@@ -102,7 +106,7 @@ function LoginForm() {
             {loading ? "Sending…" : "Send code"}
           </Button>
           <p className="text-muted-foreground text-center text-xs">
-            By continuing you agree to Savari’s trial terms.{" "}
+            By continuing you agree to Savvari’s trial terms.{" "}
             <Link href="/join/passenger" className="underline">
               New here? Sign up first
             </Link>
@@ -122,6 +126,7 @@ export default function LoginPage() {
           <LoginForm />
         </Suspense>
       </main>
+      <SiteFooter />
     </div>
   );
 }

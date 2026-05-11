@@ -51,16 +51,16 @@ export default function HomePage() {
         <section className="mx-auto grid max-w-5xl gap-8 px-4 py-16 sm:grid-cols-3">
           {[
             {
-              title: "Manual-first trial",
-              body: "We personally vet drivers and match routes before the full app rolls out.",
+              title: "Pilot-first matching",
+              body: "Humans vet drivers and overlapping routes before we scale automation — fewer bad matches, tighter trust.",
             },
             {
-              title: "Safety stack",
-              body: "CNIC checks, WhatsApp verification, and women-only ride options where you need them.",
+              title: "Safety by design",
+              body: "Full CNIC onboarding, reachable emergency contact on rides, and women-only postings when riders need them.",
             },
             {
-              title: "Fair pricing",
-              body: "Weekly passes designed to cost less than a single one-way surge ride.",
+              title: "Commuter pricing",
+              body: "Weekly commuter-style fares aimed at costing less than ad-hoc ride-hailing for the same corridor.",
             },
           ].map((item) => (
             <div key={item.title} className="rounded-2xl border border-border bg-card p-6 shadow-sm">

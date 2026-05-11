@@ -10,6 +10,9 @@ export type RideCreateInput = z.infer<typeof rideCreateSchema>;
 async function persistNewRide(driverUserId: string, d: RideCreateInput): Promise<RideActionState> {
   const supabase = await createClient();
   const timeStr = d.departure_time.length === 5 ? `${d.departure_time}:00` : d.departure_time;
+  const returnRaw = (d.return_time || "").trim();
+  const returnTimeStr =
+    returnRaw.length === 0 ? null : returnRaw.length === 5 ? `${returnRaw}:00` : returnRaw;
 
   const { data, error } = await supabase
     .from("rides")
@@ -21,6 +24,7 @@ async function persistNewRide(driverUserId: string, d: RideCreateInput): Promise
       to_area: d.to_area,
       to_area_other: d.to_area === "Other" ? d.to_area_other : null,
       departure_time: timeStr,
+      return_time: returnTimeStr,
       days: d.days,
       seats_available: d.seats_available,
       women_only: d.women_only ?? false,
@@ -63,6 +67,7 @@ export async function createRideFromFormData(formData: FormData): Promise<RideAc
     to_area: formData.get("to_area"),
     to_area_other: formData.get("to_area_other") || "",
     departure_time: formData.get("departure_time"),
+    return_time: (formData.get("return_time") as string)?.trim() || "",
     days,
     seats_available: formData.get("seats_available"),
     women_only: formData.get("women_only") === "on",

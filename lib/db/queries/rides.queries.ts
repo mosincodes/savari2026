@@ -8,6 +8,7 @@ export type RideListRow = {
   from_area: string;
   to_area: string;
   departure_time: string;
+  return_time: string | null;
   days: string[] | null;
   seats_available: number;
   women_only: boolean;
@@ -30,7 +31,7 @@ export type RideDetailRow = Record<string, unknown> & {
 };
 
 const rideListSelect =
-  "id, driver_id, from_area, to_area, departure_time, days, seats_available, women_only, meeting_point, status";
+  "id, driver_id, from_area, to_area, departure_time, return_time, days, seats_available, women_only, meeting_point, status";
 
 export async function listActiveRidesForBrowse(
   supabase: SupabaseClient,
@@ -42,7 +43,9 @@ export async function listActiveRidesForBrowse(
     pagination?: PaginationInput;
   },
 ): Promise<{ rows: RideListRow[]; meta: PaginationMeta }> {
-  const { page, pageSize, from, to } = clampPagination(options.pagination ?? {});
+  const paginationInput =
+    options.around_time && !options.pagination ? { page: 1, pageSize: 100 } : options.pagination ?? {};
+  const { page, pageSize, from, to } = clampPagination(paginationInput);
   let q = supabase
     .from("rides")
     .select(rideListSelect, { count: "exact" })
@@ -51,17 +54,21 @@ export async function listActiveRidesForBrowse(
     .order("created_at", { ascending: false });
 
   if (options.excludeDriverId) q = q.neq("driver_id", options.excludeDriverId);
-  if (options.from_area) q = q.eq("from_area", options.from_area);
-  if (options.to_area) q = q.eq("to_area", options.to_area);
+  if (options.from_area && options.from_area !== "Other") q = q.eq("from_area", options.from_area);
+  if (options.to_area && options.to_area !== "Other") q = q.eq("to_area", options.to_area);
 
   const { data, error, count } = await q.range(from, to);
   if (error) throw new Error(error.message);
 
   let list = (data || []) as RideListRow[];
   if (options.around_time) {
+    const around = options.around_time.slice(0, 5);
     list = list.filter((r) => {
-      const t = String(r.departure_time).slice(0, 5);
-      return withinMinutes(t, options.around_time!, 15);
+      const depart = String(r.departure_time).slice(0, 5);
+      const ret = r.return_time ? String(r.return_time).slice(0, 5) : null;
+      return (
+        withinMinutes(depart, around, 15) || (ret !== null && withinMinutes(ret, around, 15))
+      );
     });
   }
 

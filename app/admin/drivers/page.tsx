@@ -38,7 +38,8 @@ export default async function AdminDriversPage() {
                 <TableHead>Name</TableHead>
                 <TableHead>Phone</TableHead>
                 <TableHead>Route</TableHead>
-                <TableHead>Time</TableHead>
+                <TableHead>Out</TableHead>
+                <TableHead>Return</TableHead>
                 <TableHead>Days</TableHead>
                 <TableHead>Seats</TableHead>
               </TableRow>
@@ -51,7 +52,12 @@ export default async function AdminDriversPage() {
                   <TableCell className="max-w-[200px] truncate">
                     {String(r.route_from)} → {String(r.route_to)}
                   </TableCell>
-                  <TableCell>{String(r.departure_time).slice(0, 5)}</TableCell>
+                  <TableCell>
+                    {r.departure_time != null ? String(r.departure_time).slice(0, 5) : "—"}
+                  </TableCell>
+                  <TableCell>
+                    {r.return_time != null ? String(r.return_time).slice(0, 5) : "—"}
+                  </TableCell>
                   <TableCell className="max-w-[140px] truncate">
                     {Array.isArray(r.days_available) ? (r.days_available as string[]).join(", ") : ""}
                   </TableCell>

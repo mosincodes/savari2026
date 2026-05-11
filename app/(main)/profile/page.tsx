@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { requireOnboardedProfile } from "@/lib/require-profile";
+import { normalizeCnicDigits, formatCnicDisplay } from "@/lib/constants";
+import { formatRoleDisplay } from "@/lib/profile-display";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +11,8 @@ export default async function ProfilePage() {
   const { profile, supabase, user } = await requireOnboardedProfile();
 
   const ratingsReceived = await listRatingsReceived(supabase, user.id, 20);
+  const cnicNorm = normalizeCnicDigits(profile.cnic || "");
+  const cnicShown = cnicNorm ? formatCnicDisplay(cnicNorm) : profile.cnic?.trim() || "—";
 
   return (
     <div className="space-y-6">
@@ -25,11 +29,17 @@ export default async function ProfilePage() {
           </p>
           <p>
             <span className="text-muted-foreground">Role:</span>{" "}
-            <span className="font-medium capitalize">{profile.role}</span>
+            <span className="font-medium">{formatRoleDisplay(profile.role)}</span>
           </p>
+          {profile.gender ? (
+            <p>
+              <span className="text-muted-foreground">Gender:</span>{" "}
+              <span className="font-medium capitalize">{profile.gender.replace(/_/g, " ")}</span>
+            </p>
+          ) : null}
           <p>
-            <span className="text-muted-foreground">CNIC (last 4):</span>{" "}
-            <span className="font-medium">{profile.cnic_last4 || "—"}</span>
+            <span className="text-muted-foreground">CNIC number:</span>{" "}
+            <span className="font-medium">{cnicShown}</span>
           </p>
           <p>
             <span className="text-muted-foreground">Emergency contact:</span>{" "}

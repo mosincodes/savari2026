@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 import { JoinDriverForm } from "@/components/forms/join-driver-form";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -38,6 +39,7 @@ export default function JoinDriverPage() {
             </Link>
           </div>
         </main>
+        <SiteFooter />
       </div>
     );
   }
@@ -48,6 +50,7 @@ export default function JoinDriverPage() {
       <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10 sm:py-14">
         <JoinDriverForm onSuccess={() => setDone(true)} />
       </main>
+      <SiteFooter />
     </div>
   );
 }

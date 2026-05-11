@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createRide, type RideActionState } from "@/app/actions/rides";
 import { LAHORE_AREAS, WEEKDAYS } from "@/lib/constants";
@@ -24,6 +24,8 @@ export function NewRideForm({
 }) {
   const router = useRouter();
   const [state, formAction, pending] = useActionState(createRide, initial);
+  const [fromArea, setFromArea] = useState("");
+  const [toArea, setToArea] = useState("");
 
   useEffect(() => {
     if (state.ok && "id" in state && state.id) {
@@ -58,7 +60,14 @@ export function NewRideForm({
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="from_area">From</Label>
-              <select id="from_area" name="from_area" required className={cn(selectClass)}>
+              <select
+                id="from_area"
+                name="from_area"
+                required
+                className={cn(selectClass)}
+                value={fromArea}
+                onChange={(e) => setFromArea(e.target.value)}
+              >
                 <option value="">Area</option>
                 {LAHORE_AREAS.map((a) => (
                   <option key={a} value={a}>
@@ -69,7 +78,14 @@ export function NewRideForm({
             </div>
             <div className="space-y-2">
               <Label htmlFor="to_area">To</Label>
-              <select id="to_area" name="to_area" required className={cn(selectClass)}>
+              <select
+                id="to_area"
+                name="to_area"
+                required
+                className={cn(selectClass)}
+                value={toArea}
+                onChange={(e) => setToArea(e.target.value)}
+              >
                 <option value="">Area</option>
                 {LAHORE_AREAS.map((a) => (
                   <option key={`t-${a}`} value={a}>
@@ -78,19 +94,24 @@ export function NewRideForm({
                 ))}
               </select>
             </div>
-            <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="from_area_other">Other — from</Label>
+            <div className={cn("space-y-2 sm:col-span-2", fromArea !== "Other" && "hidden")}>
+              <Label htmlFor="from_area_other">Specify from area</Label>
               <Input id="from_area_other" name="from_area_other" />
             </div>
-            <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="to_area_other">Other — to</Label>
+            <div className={cn("space-y-2 sm:col-span-2", toArea !== "Other" && "hidden")}>
+              <Label htmlFor="to_area_other">Specify destination area</Label>
               <Input id="to_area_other" name="to_area_other" />
             </div>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="departure_time">Departure</Label>
+              <Label htmlFor="departure_time">Morning departure</Label>
               <Input id="departure_time" name="departure_time" type="time" required />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="return_time">Return trip (evening)</Label>
+              <Input id="return_time" name="return_time" type="time" />
+              <p className="text-muted-foreground text-xs">Optional — shown in search alongside departure.</p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="seats_available">Seats</Label>
@@ -104,7 +125,7 @@ export function NewRideForm({
             </div>
           </div>
           <fieldset className="space-y-2">
-            <legend className="text-sm font-medium">Days</legend>
+            <legend className="text-sm font-medium">Days · pick at least one</legend>
             <div className="flex flex-wrap gap-3">
               {WEEKDAYS.map((d) => (
                 <label key={d.id} className="flex items-center gap-2 text-sm">

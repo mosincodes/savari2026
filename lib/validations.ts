@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PK_PHONE_REGEX } from "@/lib/constants";
+import { PK_PHONE_REGEX, normalizeCnicDigits, normalizeLocalPkPhone } from "@/lib/constants";
 
 const pkPhone = z
   .string()
@@ -13,11 +13,15 @@ const signupEmail = z
   .email("Enter a valid email")
   .transform((s) => s.trim().toLowerCase());
 
-const cnic4 = z
-  .string()
-  .min(4)
-  .max(4)
-  .regex(/^\d{4}$/, "Last 4 digits of CNIC");
+const cnic13 = z.string().superRefine((val, ctx) => {
+  const n = normalizeCnicDigits(val);
+  if (!n) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Enter a valid 13-digit CNIC (e.g. 35201-1234567-1)",
+    });
+  }
+}).transform((val) => normalizeCnicDigits(val)!);
 
 const areaWithOther = z.object({
   route_from: z.string().min(1, "Select an area"),
@@ -31,11 +35,12 @@ export const driverSignupSchema = areaWithOther
     full_name: z.string().min(3, "At least 3 characters"),
     email: signupEmail,
     whatsapp_phone: pkPhone,
-    cnic_last4: cnic4,
+    cnic: cnic13,
     car_make_model: z.string().min(2, "Required"),
     car_color: z.string().min(2, "Required"),
     number_plate: z.string().min(2, "Required"),
     departure_time: z.string().min(1, "Select time"),
+    return_time: z.string().min(1, "Select return time"),
     days_available: z.array(z.string()).min(1, "Pick at least one day"),
     available_seats: z.coerce.number().refine((n) => [1, 2, 3, 4].includes(n)),
     notes: z.string().max(300).optional().or(z.literal("")),
@@ -62,7 +67,7 @@ export const passengerSignupSchema = areaWithOther
     full_name: z.string().min(3, "At least 3 characters"),
     email: signupEmail,
     whatsapp_phone: pkPhone,
-    cnic_last4: cnic4,
+    cnic: cnic13,
     preferred_time: z.string().min(1, "Select time"),
     days_needed: z.array(z.string()).min(1, "Pick at least one day"),
     seats_needed: z.coerce.number().refine((n) => n === 1 || n === 2),
@@ -85,15 +90,17 @@ export const passengerSignupSchema = areaWithOther
     }
   });
 
-export const onboardingSchema = z.object({
-  full_name: z.string().min(3),
-  cnic_last4: cnic4,
-  role: z.enum(["driver", "passenger", "both"]),
-  vehicle_make_model: z.string().optional(),
-  vehicle_color: z.string().optional(),
-  vehicle_plate: z.string().optional(),
-  emergency_contact_phone: z.union([z.literal(""), pkPhone]),
-}).superRefine((data, ctx) => {
+export const onboardingSchema = z
+  .object({
+    full_name: z.string().min(3),
+    cnic: cnic13,
+    role: z.enum(["driver", "passenger", "both"]),
+    gender: z.enum(["male", "female", "prefer_not_say"]),
+    vehicle_make_model: z.string().optional(),
+    vehicle_color: z.string().optional(),
+    vehicle_plate: z.string().optional(),
+    emergency_contact_phone: pkPhone,
+  }).superRefine((data, ctx) => {
   if (data.role === "driver" || data.role === "both") {
     if (!data.vehicle_make_model?.trim()) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Required for drivers", path: ["vehicle_make_model"] });
@@ -113,6 +120,7 @@ export const rideCreateSchema = z.object({
   to_area: z.string().min(1),
   to_area_other: z.string().optional(),
   departure_time: z.string().min(1),
+  return_time: z.string().optional(),
   days: z.array(z.string()).min(1),
   seats_available: z.coerce.number().min(1).max(4),
   women_only: z.boolean().optional(),
@@ -195,6 +203,20 @@ export const otpVerifyBodySchema = z.object({
 
 export const otpBypassBodySchema = z.object({
   phone: z.string().min(8),
+});
+
+export const surveySubmitBodySchema = z.object({
+  contact: z.string().trim().min(3).max(220).superRefine((val, ctx) => {
+    if (normalizeLocalPkPhone(val)) return;
+    const e = z.string().email().safeParse(val.trim().toLowerCase());
+    if (e.success) return;
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Enter a Pakistani WhatsApp number (03XXXXXXXXX) or a valid email",
+      path: [],
+    });
+  }),
+  answers: z.record(z.string(), z.any()),
 });
 
 export const sosBodySchema = z.object({

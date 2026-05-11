@@ -20,10 +20,49 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+function resolveMetadataBase(): URL {
+  const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (fromEnv) {
+    try {
+      const u = new URL(fromEnv.endsWith("/") ? fromEnv.slice(0, -1) : fromEnv);
+      return u;
+    } catch {
+      /* fall through */
+    }
+  }
+  const vercel = process.env.VERCEL_URL?.trim();
+  if (vercel) {
+    try {
+      return new URL(`https://${vercel}`);
+    } catch {
+      /* fall through */
+    }
+  }
+  return new URL("http://localhost:3000");
+}
+
+const metadataBase = resolveMetadataBase();
+const ogTitle = "Savvari · Lahore Carpooling";
+const ogDescription =
+  "Peer-to-peer carpooling for Lahore. Share rides, split fuel, build a smarter commute.";
+
 export const metadata: Metadata = {
-  title: "Savvari · Lahore Carpooling",
-  description:
-    "Peer-to-peer carpooling for Lahore. Share rides, split fuel, build a smarter commute.",
+  metadataBase,
+  title: ogTitle,
+  description: ogDescription,
+  openGraph: {
+    title: ogTitle,
+    description: ogDescription,
+    siteName: "Savvari",
+    locale: "en_PK",
+    type: "website",
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: ogTitle,
+    description: ogDescription,
+  },
 };
 
 export default function RootLayout({
