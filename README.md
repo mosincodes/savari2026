@@ -69,3 +69,4 @@ Connect the repo, set env vars from `.env.example`, and deploy. Use **Node 20** 
 ## Legacy static survey
 
 The original single-file survey was moved to `public/survey.html` during bootstrap. A copy may also exist under `../savari2026_legacy_backup/` on your machine.
+
