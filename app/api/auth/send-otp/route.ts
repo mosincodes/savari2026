@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { normalizeLocalPkPhone, toE164Pakistan } from "@/lib/constants";
+import { createWhatsAppOtp, sendWhatsAppOtp } from "@/lib/services/whatsapp-otp-service";
 import { otpSendBodySchema } from "@/lib/validations";
-import { createClientForRoute } from "@/lib/supabase/route-handler";
 
-/** Server-side OTP send — session cookies are untouched until verification. */
+// WhatsApp transport (Baileys) requires the Node.js runtime, not edge.
+export const runtime = "nodejs";
+
+/** Server-side OTP send over WhatsApp — no session cookies are touched until verification. */
 export async function POST(request: NextRequest) {
   let raw: unknown;
   try {
@@ -27,16 +30,16 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const response = NextResponse.json({ ok: true });
-  const supabase = createClientForRoute(request, response);
-  const { error } = await supabase.auth.signInWithOtp({
-    phone: toE164Pakistan(local),
-    options: { channel: "sms" },
-  });
+  const phoneE164 = toE164Pakistan(local);
 
-  if (error) {
-    return NextResponse.json({ error: error.message, code: "OTP_SEND_FAILED" }, { status: 400 });
+  try {
+    const token = await createWhatsAppOtp(phoneE164);
+    await sendWhatsAppOtp(phoneE164, token);
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Failed to send WhatsApp code.";
+    console.error("send-otp (whatsapp):", message);
+    return NextResponse.json({ error: message, code: "OTP_SEND_FAILED" }, { status: 502 });
   }
 
-  return response;
+  return NextResponse.json({ ok: true });
 }

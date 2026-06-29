@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# baileys whatsapp session (contains login credentials — never commit)
+/.baileys_auth/

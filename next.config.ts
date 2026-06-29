@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Baileys + pino use Node-only APIs; must not be webpack-bundled in Route Handlers.
+  serverExternalPackages: ["baileys", "pino", "thread-stream", "@hapi/boom", "qrcode"],
 };
 
 export default nextConfig;

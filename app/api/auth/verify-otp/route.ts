@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { mintSessionForPhone } from "@/lib/auth/phone-session";
 import { normalizeLocalPkPhone, toE164Pakistan } from "@/lib/constants";
-import { otpVerifyBodySchema } from "@/lib/validations";
+import { verifyWhatsAppOtp } from "@/lib/services/whatsapp-otp-service";
 import { createClientForRoute } from "@/lib/supabase/route-handler";
+import { otpVerifyBodySchema } from "@/lib/validations";
 
-/** Server-side OTP verify — attaches Supabase session cookies to the response. */
+// Minting a session via the admin client requires the Node.js runtime, not edge.
+export const runtime = "nodejs";
+
+/** Verify the WhatsApp OTP, then attach a Supabase session to the response. */
 export async function POST(request: NextRequest) {
   let raw: unknown;
   try {
@@ -22,23 +27,29 @@ export async function POST(request: NextRequest) {
   if (!local) {
     return NextResponse.json({ error: "Invalid phone." }, { status: 400 });
   }
+  const phoneE164 = toE164Pakistan(local);
   const token = parsed.data.token.replace(/\s/g, "");
+
+  const valid = await verifyWhatsAppOtp(phoneE164, token);
+  if (!valid) {
+    return NextResponse.json({ error: "Invalid or expired code." }, { status: 400 });
+  }
+
+  const session = await mintSessionForPhone(phoneE164);
+  if (!session.ok) {
+    const status = session.reason === "misconfigured" ? 500 : 400;
+    return NextResponse.json({ error: session.message ?? "Could not sign you in." }, { status });
+  }
 
   const response = NextResponse.json({ ok: true });
   const supabase = createClientForRoute(request, response);
-
-  const { data, error } = await supabase.auth.verifyOtp({
-    phone: toE164Pakistan(local),
-    token,
-    type: "sms",
+  const { error } = await supabase.auth.setSession({
+    access_token: session.access_token,
+    refresh_token: session.refresh_token,
   });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 400 });
-  }
-
-  if (!data.user) {
-    return NextResponse.json({ error: "Verification incomplete." }, { status: 400 });
   }
 
   return response;

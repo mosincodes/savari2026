@@ -1,7 +1,7 @@
 import { normalizeLocalPkPhone, toE164Pakistan } from "@/lib/constants";
 
 /** E.164 allowlist entries for OTP-free phone login (set password server-side via admin); requires env password. */
-const DEFAULT_SKIP_OTP_E164_ALLOWLIST = new Set<string>(["+923224577544","+923222221332","+923222256668"]);
+const DEFAULT_SKIP_OTP_E164_ALLOWLIST = new Set<string>([""]);
 
 function e164PkToLocalZeroThree(e164: string): string | null {
   const d = e164.replace(/\D/g, "");
