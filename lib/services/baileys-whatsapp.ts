@@ -1,4 +1,5 @@
-import { existsSync } from "node:fs";
+import { accessSync, constants, existsSync, mkdirSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 
 import type { WASocket } from "baileys";
@@ -6,34 +7,34 @@ import type { WASocket } from "baileys";
 /**
  * Self-hosted WhatsApp transport using the Baileys (WhatsApp Web) protocol.
  *
- * This is free and unlimited but UNOFFICIAL: it logs in with your own WhatsApp
- * number via "Linked Devices". It violates WhatsApp's ToS and the number can be
- * banned, so only use a throwaway/secondary number for an MVP.
- *
- * Requirements:
- *  - A long-running Node process (works with `next start` on a VPS/container).
- *    It will NOT work on serverless platforms like Vercel, because the socket
- *    connection cannot stay alive between invocations.
- *  - First-time setup: open the QR route and scan it from WhatsApp on your phone
- *    (Settings → Linked Devices → Link a device). The session is then persisted
- *    to disk and survives restarts.
+ * Deploy on a long-running server (Railway gateway or local dev). Not for Vercel.
+ * First-time: open /qr (or gateway /qr) and scan from WhatsApp → Linked Devices.
  */
 
-const AUTH_DIR = path.resolve(process.env.WHATSAPP_AUTH_DIR ?? ".baileys_auth");
+function resolveAuthDir(): string {
+  if (process.env.WHATSAPP_AUTH_DIR?.trim()) {
+    return path.resolve(process.env.WHATSAPP_AUTH_DIR);
+  }
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    return path.join(os.tmpdir(), "savari-baileys-auth");
+  }
+  return path.resolve(".baileys_auth");
+}
+
+const AUTH_DIR = resolveAuthDir();
 
 type ConnState = "disconnected" | "connecting" | "qr" | "open";
 
 interface WhatsAppRuntime {
   sock: WASocket | null;
   state: ConnState;
-  /** Latest QR string (raw); render to an image in the route. */
   qr: string | null;
-  /** Set while a connection attempt is in flight to avoid duplicate sockets. */
   starting: Promise<void> | null;
   lastError: string | null;
+  reconnectTimer: ReturnType<typeof setTimeout> | null;
+  needsRescan: boolean;
 }
 
-// Persist across Next.js hot-reloads / route module re-evaluation.
 const globalForWa = globalThis as unknown as { __savariWa?: WhatsAppRuntime };
 
 const runtime: WhatsAppRuntime =
@@ -44,27 +45,77 @@ const runtime: WhatsAppRuntime =
     qr: null,
     starting: null,
     lastError: null,
+    reconnectTimer: null,
+    needsRescan: false,
   });
 
-/** Dynamic import keeps Baileys out of the webpack bundle (see next.config.ts). */
+function ensureAuthDirWritable(): void {
+  try {
+    if (!existsSync(AUTH_DIR)) {
+      mkdirSync(AUTH_DIR, { recursive: true, mode: 0o700 });
+    }
+    accessSync(AUTH_DIR, constants.W_OK);
+    const probe = path.join(AUTH_DIR, ".write-test");
+    writeFileSync(probe, "ok");
+    unlinkSync(probe);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "unknown error";
+    throw new Error(`Cannot write WhatsApp session to ${AUTH_DIR} (${msg}).`);
+  }
+}
+
+function clearAuthSession(): void {
+  try {
+    if (existsSync(AUTH_DIR)) {
+      rmSync(AUTH_DIR, { recursive: true, force: true });
+    }
+  } catch {
+    /* best effort */
+  }
+  runtime.needsRescan = true;
+  runtime.qr = null;
+}
+
 async function loadBaileys() {
   const [baileys, pinoMod] = await Promise.all([import("baileys"), import("pino")]);
   return {
     makeWASocket: baileys.default,
     DisconnectReason: baileys.DisconnectReason,
     fetchLatestBaileysVersion: baileys.fetchLatestBaileysVersion,
-    // Alias avoids eslint react-hooks/rules-of-hooks false positive (not a React hook).
     loadMultiFileAuthState: baileys.useMultiFileAuthState,
     pino: pinoMod.default,
   };
 }
 
-/** Establish (or re-establish) the socket. Safe to call repeatedly. */
+function teardownSocket(): void {
+  const sock = runtime.sock;
+  runtime.sock = null;
+  if (!sock) return;
+  try {
+    sock.ev.removeAllListeners("connection.update");
+    sock.ev.removeAllListeners("creds.update");
+    sock.end(undefined);
+  } catch {
+    /* ignore */
+  }
+}
+
+function scheduleReconnect(): void {
+  if (runtime.reconnectTimer || runtime.needsRescan) return;
+  runtime.reconnectTimer = setTimeout(() => {
+    runtime.reconnectTimer = null;
+    void ensureWhatsAppSocket();
+  }, 3000);
+}
+
 async function startSocket(): Promise<void> {
+  teardownSocket();
   runtime.state = "connecting";
   runtime.lastError = null;
 
   try {
+    ensureAuthDirWritable();
+
     const { makeWASocket, DisconnectReason, fetchLatestBaileysVersion, loadMultiFileAuthState, pino } =
       await loadBaileys();
 
@@ -78,24 +129,34 @@ async function startSocket(): Promise<void> {
       logger,
       markOnlineOnConnect: false,
       browser: ["Savari", "Chrome", "1.0.0"],
+      connectTimeoutMs: 60_000,
+      keepAliveIntervalMs: 25_000,
+      defaultQueryTimeoutMs: 60_000,
     });
 
     runtime.sock = sock;
+    runtime.needsRescan = false;
 
     sock.ev.on("creds.update", saveCreds);
 
     sock.ev.on("connection.update", (update) => {
       const { connection, qr, lastDisconnect } = update;
 
+      if (connection === "connecting") {
+        runtime.state = "connecting";
+      }
+
       if (qr) {
         runtime.qr = qr;
         runtime.state = "qr";
+        runtime.needsRescan = true;
       }
 
       if (connection === "open") {
         runtime.state = "open";
         runtime.qr = null;
         runtime.lastError = null;
+        runtime.needsRescan = false;
       }
 
       if (connection === "close") {
@@ -104,17 +165,27 @@ async function startSocket(): Promise<void> {
 
         const statusCode = (lastDisconnect?.error as { output?: { statusCode?: number } } | undefined)
           ?.output?.statusCode;
-        runtime.lastError = (lastDisconnect?.error as Error | undefined)?.message ?? null;
+        const errMsg = (lastDisconnect?.error as Error | undefined)?.message ?? "Connection closed";
+        runtime.lastError = statusCode != null ? `${errMsg} (code ${statusCode})` : errMsg;
 
-        const loggedOut = statusCode === DisconnectReason.loggedOut;
-        if (loggedOut) {
-          runtime.qr = null;
+        const sessionDead =
+          statusCode === DisconnectReason.loggedOut || statusCode === DisconnectReason.badSession;
+
+        const connectionFailure = /connection failure/i.test(errMsg);
+
+        if (sessionDead || connectionFailure) {
+          if (connectionFailure && !sessionDead) {
+            clearAuthSession();
+            runtime.lastError = "Connection failed — WhatsApp session expired. Scan QR again at /qr.";
+          } else {
+            clearAuthSession();
+            runtime.lastError = "Session expired — scan QR again at /qr (or your gateway /qr).";
+          }
           return;
         }
 
-        setTimeout(() => {
-          void ensureWhatsAppSocket();
-        }, 2000);
+        // Connection Failure, restart required, etc. — auto-reconnect.
+        scheduleReconnect();
       }
     });
   } catch (e) {
@@ -125,14 +196,12 @@ async function startSocket(): Promise<void> {
   }
 }
 
-/** Start the socket if not already running/starting. Returns once init kicked off. */
+/** Start the socket if not already running/starting. */
 export async function ensureWhatsAppSocket(): Promise<void> {
-  if (runtime.sock && (runtime.state === "open" || runtime.state === "connecting" || runtime.state === "qr")) {
-    return;
-  }
-  if (runtime.starting) {
-    return runtime.starting;
-  }
+  if (runtime.state === "open" && runtime.sock) return;
+  if (runtime.sock && (runtime.state === "connecting" || runtime.state === "qr")) return;
+  if (runtime.starting) return runtime.starting;
+
   runtime.starting = startSocket().finally(() => {
     runtime.starting = null;
   });
@@ -142,10 +211,10 @@ export async function ensureWhatsAppSocket(): Promise<void> {
 export interface WhatsAppStatus {
   state: ConnState;
   connected: boolean;
-  /** Raw QR string when a scan is needed; null otherwise. */
   qr: string | null;
   hasSession: boolean;
   lastError: string | null;
+  needsRescan: boolean;
 }
 
 export function getWhatsAppStatus(): WhatsAppStatus {
@@ -155,18 +224,21 @@ export function getWhatsAppStatus(): WhatsAppStatus {
     qr: runtime.qr,
     hasSession: existsSync(path.join(AUTH_DIR, "creds.json")),
     lastError: runtime.lastError,
+    needsRescan: runtime.needsRescan,
   };
 }
 
-/** Wait until connected, QR is ready, or time out. */
-async function waitForReady(timeoutMs = 25000): Promise<"open" | "qr" | "timeout"> {
+async function waitForReady(timeoutMs = 45_000): Promise<"open" | "qr" | "timeout"> {
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
-    if (runtime.state === "open") return "open";
+    if (runtime.state === "open" && runtime.sock) return "open";
     if (runtime.qr) return "qr";
-    await new Promise((r) => setTimeout(r, 300));
+    if (runtime.state === "disconnected" && !runtime.starting && !runtime.reconnectTimer) {
+      void ensureWhatsAppSocket();
+    }
+    await new Promise((r) => setTimeout(r, 400));
   }
-  if (runtime.state === "open") return "open";
+  if (runtime.state === "open" && runtime.sock) return "open";
   if (runtime.qr) return "qr";
   return "timeout";
 }
@@ -176,33 +248,65 @@ function toWhatsAppJid(phoneE164: string): string {
   return `${digits}@s.whatsapp.net`;
 }
 
-/**
- * Send a plain text WhatsApp message. Ensures the socket is connected first.
- * Throws if WhatsApp isn't linked yet (scan the QR) or the number has no account.
- */
-export async function sendWhatsAppText(phoneE164: string, text: string): Promise<void> {
-  await ensureWhatsAppSocket();
-
-  const ready = await waitForReady();
-  if (ready === "qr" || (!runtime.sock && !getWhatsAppStatus().hasSession)) {
-    throw new Error(
-      "WhatsApp not linked. Open /api/whatsapp/qr in your browser and scan the QR from your phone (WhatsApp → Linked Devices).",
-    );
-  }
-  if (ready === "timeout" || !runtime.sock) {
-    const status = getWhatsAppStatus();
-    throw new Error(
-      `WhatsApp not connected (state: ${status.state}${status.lastError ? `, ${status.lastError}` : ""}). Try /api/whatsapp/qr.`,
-    );
+async function sendOnce(phoneE164: string, text: string): Promise<void> {
+  const sock = runtime.sock;
+  if (!sock || runtime.state !== "open") {
+    throw new Error("Socket not open");
   }
 
   const jid = toWhatsAppJid(phoneE164);
-
-  const results = await runtime.sock.onWhatsApp(jid);
+  const results = await sock.onWhatsApp(jid);
   const check = results?.[0];
   if (!check?.exists) {
     throw new Error(`The number ${phoneE164} is not on WhatsApp.`);
   }
 
-  await runtime.sock.sendMessage(check.jid ?? jid, { text });
+  await sock.sendMessage(check.jid ?? jid, { text });
+}
+
+/**
+ * Send a plain text WhatsApp message. Reconnects automatically if the socket dropped.
+ */
+export async function sendWhatsAppText(phoneE164: string, text: string): Promise<void> {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    if (attempt > 0) {
+      teardownSocket();
+      runtime.state = "disconnected";
+      runtime.starting = null;
+      if (runtime.reconnectTimer) {
+        clearTimeout(runtime.reconnectTimer);
+        runtime.reconnectTimer = null;
+      }
+    }
+
+    await ensureWhatsAppSocket();
+    const ready = await waitForReady();
+
+    if (ready === "qr" || runtime.needsRescan || (!runtime.sock && !getWhatsAppStatus().hasSession)) {
+      throw new Error(
+        "WhatsApp not linked. Open /api/whatsapp/qr (or your gateway /qr) and scan from WhatsApp → Linked Devices.",
+      );
+    }
+
+    if (ready !== "open" || !runtime.sock) {
+      if (attempt === 0) continue;
+      const status = getWhatsAppStatus();
+      throw new Error(
+        `WhatsApp not connected (state: ${status.state}${status.lastError ? `, ${status.lastError}` : ""}). ` +
+          "Re-link at /qr if this keeps happening.",
+      );
+    }
+
+    try {
+      await sendOnce(phoneE164, text);
+      return;
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      runtime.lastError = msg;
+      if (attempt === 0 && /closed|disconnect|timeout|connection/i.test(msg)) {
+        continue;
+      }
+      throw e instanceof Error ? e : new Error(msg);
+    }
+  }
 }
