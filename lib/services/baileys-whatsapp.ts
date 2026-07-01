@@ -53,7 +53,8 @@ async function loadBaileys() {
     makeWASocket: baileys.default,
     DisconnectReason: baileys.DisconnectReason,
     fetchLatestBaileysVersion: baileys.fetchLatestBaileysVersion,
-    useMultiFileAuthState: baileys.useMultiFileAuthState,
+    // Alias avoids eslint react-hooks/rules-of-hooks false positive (not a React hook).
+    loadMultiFileAuthState: baileys.useMultiFileAuthState,
     pino: pinoMod.default,
   };
 }
@@ -64,11 +65,11 @@ async function startSocket(): Promise<void> {
   runtime.lastError = null;
 
   try {
-    const { makeWASocket, DisconnectReason, fetchLatestBaileysVersion, useMultiFileAuthState, pino } =
+    const { makeWASocket, DisconnectReason, fetchLatestBaileysVersion, loadMultiFileAuthState, pino } =
       await loadBaileys();
 
     const logger = pino({ level: process.env.WHATSAPP_LOG_LEVEL ?? "silent" });
-    const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
+    const { state, saveCreds } = await loadMultiFileAuthState(AUTH_DIR);
     const { version } = await fetchLatestBaileysVersion();
 
     const sock = makeWASocket({
