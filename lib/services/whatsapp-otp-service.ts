@@ -1,5 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendWhatsAppText } from "@/lib/services/baileys-whatsapp";
+import { sendWhatsAppMessage } from "@/lib/services/whatsapp-transport";
 
 const OTP_TTL_MINUTES = 10;
 
@@ -27,9 +27,9 @@ export async function createWhatsAppOtp(phoneE164: string): Promise<string> {
   return token;
 }
 
-/** Send the OTP via the self-hosted Baileys WhatsApp transport (free). */
+/** Send the OTP via Baileys (local or production gateway). */
 export async function sendWhatsAppOtp(phoneE164: string, token: string): Promise<void> {
-  await sendWhatsAppText(
+  await sendWhatsAppMessage(
     phoneE164,
     `Your Savari verification code is: *${token}*\n\nThis code expires in ${OTP_TTL_MINUTES} minutes. Do not share it with anyone.`,
   );

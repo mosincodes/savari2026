@@ -1,0 +1,10 @@
+# Deploy the Baileys gateway on Railway (separate service from Vercel).
+# Start command: npm run whatsapp-gateway
+# Mount a volume at /data and set WHATSAPP_AUTH_DIR=/data/.baileys_auth
+
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "npm run whatsapp-gateway"
+restartPolicyType = "always"
