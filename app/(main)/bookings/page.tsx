@@ -8,6 +8,14 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { Calendar, Route } from "lucide-react";
 
+function paymentLabel(status: string): string {
+  if (status === "pending_review") return "Payment submitted";
+  if (status === "paid") return "Paid";
+  if (status === "unpaid") return "Payment due";
+  if (status === "rejected") return "Payment rejected";
+  return status;
+}
+
 function paymentTone(status: string): "default" | "secondary" | "destructive" | "outline" {
   if (status === "paid" || status === "confirmed") return "secondary";
   if (status === "unpaid" || status === "rejected") return "destructive";
@@ -72,7 +80,9 @@ export default async function BookingsPage() {
                         </span>
                       </p>
                     </div>
-                    <Badge variant={paymentTone(b.payment_status ?? "")}>{b.payment_status}</Badge>
+                    <Badge variant={paymentTone(b.payment_status ?? "")}>
+                      {paymentLabel(b.payment_status ?? "")}
+                    </Badge>
                   </CardHeader>
                   <CardContent className="space-y-4 text-sm">
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -92,8 +102,20 @@ export default async function BookingsPage() {
                     {b.payment_status === "unpaid" || b.payment_status === "rejected" ? (
                       <BookingPaymentForm bookingId={b.id} />
                     ) : b.payment_status === "pending_review" ? (
-                      <p className="text-muted-foreground text-xs italic">
-                        Payment sent — awaiting admin confirmation. We&apos;ll update this row when it clears.
+                      <div className="text-muted-foreground space-y-1 text-xs">
+                        <p className="italic">
+                          Payment proof received via {b.payment_method ?? "—"} — awaiting admin confirmation.
+                        </p>
+                        {b.payment_ref ? (
+                          <p>
+                            Ref: <span className="text-foreground font-medium">{b.payment_ref}</span>
+                          </p>
+                        ) : null}
+                      </div>
+                    ) : b.payment_status === "paid" ? (
+                      <p className="text-muted-foreground text-xs">
+                        Paid via {b.payment_method ?? "—"}
+                        {b.payment_ref ? ` · Ref ${b.payment_ref}` : ""}
                       </p>
                     ) : null}
                   </CardContent>

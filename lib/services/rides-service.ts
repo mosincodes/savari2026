@@ -41,6 +41,7 @@ async function persistNewRide(driverUserId: string, d: RideCreateInput): Promise
   }
 
   revalidateRidesAffected(driverUserId, data.id);
+  revalidatePath("/rides");
   revalidatePath("/dashboard");
   return { ok: true, id: data.id };
 }

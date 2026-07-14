@@ -1,18 +1,26 @@
 import Link from "next/link";
 import { requireOnboardedProfile } from "@/lib/require-profile";
 import { LAHORE_AREAS } from "@/lib/constants";
+import { COMMUTE_TIME_WINDOW_MIN } from "@/lib/area-match";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { listActiveRidesForBrowse } from "@/lib/db/queries/rides.queries";
-import { ArrowRight, SearchX } from "lucide-react";
+import { ArrowRight, MessageCircle, SearchX } from "lucide-react";
+import { normalizeLocalPkPhone } from "@/lib/constants";
 
 const selectClass =
   "focus-ring flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm transition-colors hover:border-accent/35";
 
 type SearchParams = { from?: string; to?: string; around?: string };
+
+function whatsappHref(phone: string): string {
+  const local = normalizeLocalPkPhone(phone) ?? phone.replace(/\D/g, "");
+  const digits = local.startsWith("0") ? `92${local.slice(1)}` : local;
+  return `https://wa.me/${digits}?text=${encodeURIComponent("Hi! I found your commute on Savvari and would like to ride with you.")}`;
+}
 
 export default async function RidesPage({
   searchParams,
@@ -36,7 +44,8 @@ export default async function RidesPage({
       <div>
         <h1 className="font-heading text-4xl tracking-tight">Find your ride</h1>
         <p className="text-muted-foreground mt-2 max-w-xl text-sm sm:text-base">
-          We match departures (and return times, when listed) within about 15 minutes of the time you pick.
+          Matches departures and return times within about {COMMUTE_TIME_WINDOW_MIN} minutes of the time you pick.
+          Includes driver signups and posted rides.
         </p>
       </div>
 
@@ -115,8 +124,8 @@ export default async function RidesPage({
                 <p className="font-heading text-lg">No rides match yet</p>
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   {hasFilters
-                    ? "Try clearing one filter — especially time — or check again closer to weekday mornings."
-                    : "New listings appear as drivers post. You can widen filters once more routes show up."}
+                    ? `Try clearing the time filter or widening areas — we match within ${COMMUTE_TIME_WINDOW_MIN} minutes of your pick.`
+                    : "New listings appear as drivers post or sign up. You can widen filters once more routes show up."}
                 </p>
                 <div className="flex flex-wrap justify-center gap-2 pt-2 sm:justify-start">
                   {hasFilters ? (
@@ -137,50 +146,88 @@ export default async function RidesPage({
         ) : (
           <ul role="list" className="space-y-4">
             {filtered.map((r) => (
-              <li key={r.id}>
-                <Link href={`/rides/${r.id}`} className="group block rounded-2xl">
-                  <Card className="hover-lift hover:border-accent/40 border-border/70 transition-colors">
-                    <CardContent className="flex gap-4 py-5">
-                      <div className="bg-accent/10 pointer-events-none flex h-14 w-14 shrink-0 items-center justify-center rounded-xl text-accent">
-                        <ArrowRight className="h-6 w-6 -rotate-45" aria-hidden />
-                      </div>
-                      <div className="min-w-0 flex-1 space-y-1">
-                        <p className="text-lg font-semibold leading-snug group-hover:text-accent">
-                          {r.from_area}{" "}
-                          <span className="text-muted-foreground px-1 font-normal" aria-hidden>
-                            →
-                          </span>
-                          {" "}{r.to_area}
-                        </p>
-                        <p className="text-muted-foreground text-sm">
-                          Departs {String(r.departure_time).slice(0, 5)}
-                          {r.return_time ? (
-                            <>
-                              {" "}
-                              &middot; Returns {String(r.return_time).slice(0, 5)}
-                            </>
-                          ) : null}
-                          {r.days?.length ? <> &middot; {r.days.join(", ")}</> : null} &middot; {r.seats_available}{" "}
-                          seats
-                        </p>
-                        {r.meeting_point ? (
-                          <p className="text-muted-foreground line-clamp-2 text-xs">Meet at {r.meeting_point}</p>
-                        ) : null}
-                        {r.women_only ? (
-                          <div className="pt-2">
-                            <Badge variant="secondary">Women only</Badge>
-                          </div>
-                        ) : null}
-                      </div>
-                      <ArrowRight className="text-muted-foreground group-hover:text-accent mt-2 h-5 w-5 shrink-0 opacity-70 transition-colors group-hover:translate-x-0.5 motion-safe:transition-transform" />
-                    </CardContent>
-                  </Card>
-                </Link>
+              <li key={`${r.listingKind}-${r.id}`}>
+                {r.listingKind === "ride" ? (
+                  <Link href={`/rides/${r.id}`} className="group block rounded-2xl">
+                    <ListingCard r={r} />
+                  </Link>
+                ) : (
+                  <a
+                    href={r.contactPhone ? whatsappHref(r.contactPhone) : "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block rounded-2xl"
+                  >
+                    <ListingCard r={r} signup />
+                  </a>
+                )}
               </li>
             ))}
           </ul>
         )}
       </div>
     </div>
+  );
+}
+
+function ListingCard({
+  r,
+  signup = false,
+}: {
+  r: {
+    from_area: string;
+    to_area: string;
+    departure_time: string;
+    return_time: string | null;
+    days: string[] | null;
+    seats_available: number;
+    meeting_point: string | null;
+    women_only: boolean;
+    driverName?: string | null;
+  };
+  signup?: boolean;
+}) {
+  return (
+    <Card className="hover-lift hover:border-accent/40 border-border/70 transition-colors">
+      <CardContent className="flex gap-4 py-5">
+        <div className="bg-accent/10 pointer-events-none flex h-14 w-14 shrink-0 items-center justify-center rounded-xl text-accent">
+          {signup ? (
+            <MessageCircle className="h-6 w-6" aria-hidden />
+          ) : (
+            <ArrowRight className="h-6 w-6 -rotate-45" aria-hidden />
+          )}
+        </div>
+        <div className="min-w-0 flex-1 space-y-1">
+          <p className="text-lg font-semibold leading-snug group-hover:text-accent">
+            {r.from_area}{" "}
+            <span className="text-muted-foreground px-1 font-normal" aria-hidden>
+              →
+            </span>{" "}
+            {r.to_area}
+          </p>
+          <p className="text-muted-foreground text-sm">
+            Departs {String(r.departure_time).slice(0, 5)}
+            {r.return_time ? (
+              <>
+                {" "}
+                &middot; Returns {String(r.return_time).slice(0, 5)}
+              </>
+            ) : null}
+            {r.days?.length ? <> &middot; {r.days.join(", ")}</> : null} &middot; {r.seats_available} seats
+          </p>
+          {signup && r.driverName ? (
+            <p className="text-muted-foreground text-xs">Driver signup · {r.driverName} · tap to WhatsApp</p>
+          ) : null}
+          {r.meeting_point ? (
+            <p className="text-muted-foreground line-clamp-2 text-xs">Meet at {r.meeting_point}</p>
+          ) : null}
+          <div className="flex flex-wrap gap-2 pt-2">
+            {signup ? <Badge variant="outline">Driver signup</Badge> : null}
+            {r.women_only ? <Badge variant="secondary">Women only</Badge> : null}
+          </div>
+        </div>
+        <ArrowRight className="text-muted-foreground group-hover:text-accent mt-2 h-5 w-5 shrink-0 opacity-70 transition-colors group-hover:translate-x-0.5 motion-safe:transition-transform" />
+      </CardContent>
+    </Card>
   );
 }

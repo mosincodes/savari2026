@@ -19,8 +19,11 @@ export default function JoinDriverPage() {
           <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-accent">شکریہ</p>
           <h1 className="font-heading mb-4 text-3xl tracking-tight">Thank you!</h1>
           <p className="text-muted-foreground mb-8 text-balance">
-            We’ll reach out on WhatsApp when we have passengers on your route. Share Savvari with colleagues
-            who commute.
+            Your route is saved and appears in{" "}
+            <Link href="/login?next=/rides" className="text-foreground font-medium underline-offset-4 hover:underline">
+              Find your ride
+            </Link>{" "}
+            for logged-in passengers. We&apos;ll also reach out on WhatsApp when we have matches.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Button

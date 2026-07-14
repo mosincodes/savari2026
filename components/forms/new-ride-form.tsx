@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createRide, type RideActionState } from "@/app/actions/rides";
+import { COMMUTE_TIME_WINDOW_MIN } from "@/lib/area-match";
 import { LAHORE_AREAS, WEEKDAYS } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,7 +41,9 @@ export function NewRideForm({
     <Card>
       <CardHeader>
         <CardTitle>Route & schedule</CardTitle>
-        <CardDescription>Passengers see this in search (±15 min time window).</CardDescription>
+        <CardDescription>
+          Passengers see this in search (±{COMMUTE_TIME_WINDOW_MIN} min time window).
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form action={formAction} className="flex flex-col gap-4">

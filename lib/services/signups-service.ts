@@ -6,7 +6,8 @@ import {
   type PassengerSignupInput,
 } from "@/lib/validations";
 import type { SignupActionState as ActionState } from "@/lib/types/form-states";
-import { revalidateAdminSurfaces } from "@/lib/services/revalidate-tags";
+import { revalidateAdminSurfaces, revalidateRidesAffected } from "@/lib/services/revalidate-tags";
+import { revalidatePath } from "next/cache";
 
 function flattenZod(err: { flatten: () => { fieldErrors: Record<string, string[]> } }) {
   const f = err.flatten().fieldErrors;
@@ -75,7 +76,41 @@ export async function submitDriverSignupFromForm(
     return { ok: false, message: error.message || "Could not save. Try again." };
   }
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("onboarding_completed")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (profile?.onboarding_completed) {
+      const { error: rideErr } = await supabase.from("rides").insert({
+        driver_id: user.id,
+        from_area: d.route_from,
+        from_area_other: d.route_from === "Other" ? d.route_from_other : null,
+        to_area: d.route_to,
+        to_area_other: d.route_to === "Other" ? d.route_to_other : null,
+        departure_time: departureStr,
+        return_time: returnStr,
+        days: d.days_available,
+        seats_available: d.available_seats,
+        notes: d.notes || null,
+        status: "active",
+      });
+
+      if (rideErr) {
+        console.error("ride from driver signup:", rideErr.message);
+      } else {
+        revalidateRidesAffected(user.id);
+      }
+    }
+  }
+
   revalidateAdminSurfaces();
+  revalidatePath("/rides");
   return { ok: true };
 }
 

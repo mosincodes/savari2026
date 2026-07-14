@@ -42,7 +42,7 @@ export async function submitBookingPaymentForPassenger(
 
   const { booking_id, payment_method, payment_ref } = input;
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("bookings")
     .update({
       payment_method,
@@ -51,11 +51,17 @@ export async function submitBookingPaymentForPassenger(
       updated_at: new Date().toISOString(),
     })
     .eq("id", booking_id)
-    .eq("passenger_id", passengerId);
+    .eq("passenger_id", passengerId)
+    .select("id")
+    .maybeSingle();
 
   if (error) {
     console.error(error);
     return { ok: false, message: error.message };
+  }
+
+  if (!data) {
+    return { ok: false, message: "Could not update payment — booking not found or not permitted." };
   }
 
   revalidateBookingsAffected(passengerId);

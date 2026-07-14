@@ -19,7 +19,11 @@ export default function JoinPassengerPage() {
           <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-accent">شکریہ</p>
           <h1 className="font-heading mb-4 text-3xl tracking-tight">Thank you!</h1>
           <p className="text-muted-foreground mb-8 text-balance">
-            We’ll WhatsApp you when a verified driver matches your route and time.
+            We&apos;ll WhatsApp you when a verified driver matches your route. You can also{" "}
+            <Link href="/login?next=/rides" className="text-foreground font-medium underline-offset-4 hover:underline">
+              browse active listings
+            </Link>{" "}
+            if you have an account.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Button
