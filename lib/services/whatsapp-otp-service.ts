@@ -1,4 +1,4 @@
-import { createAdminClient } from "@/lib/supabase/admin";
+import { storeOtp, verifyOtp } from "@/lib/services/otp-store";
 import { sendWhatsAppMessage } from "@/lib/services/whatsapp-transport";
 
 const OTP_TTL_MINUTES = 10;
@@ -9,21 +9,9 @@ function generateOtpToken(): string {
 
 /** Generate a 6-digit OTP, persist it, and return the token. */
 export async function createWhatsAppOtp(phoneE164: string): Promise<string> {
-  const admin = createAdminClient();
   const token = generateOtpToken();
-  const expiresAt = new Date(Date.now() + OTP_TTL_MINUTES * 60 * 1000).toISOString();
-
-  // Invalidate any prior unused OTPs for this number.
-  await admin.from("otp_verifications").update({ used_at: new Date().toISOString() }).eq("phone", phoneE164).is("used_at", null);
-
-  const { error } = await admin.from("otp_verifications").insert({
-    phone: phoneE164,
-    token,
-    expires_at: expiresAt,
-  });
-
-  if (error) throw new Error(`OTP store failed: ${error.message}`);
-
+  const expiresAt = new Date(Date.now() + OTP_TTL_MINUTES * 60 * 1000);
+  await storeOtp(phoneE164, token, expiresAt);
   return token;
 }
 
@@ -37,23 +25,5 @@ export async function sendWhatsAppOtp(phoneE164: string, token: string): Promise
 
 /** Verify OTP. Returns true and marks it used; false if invalid/expired. */
 export async function verifyWhatsAppOtp(phoneE164: string, token: string): Promise<boolean> {
-  const admin = createAdminClient();
-
-  const { data, error } = await admin
-    .from("otp_verifications")
-    .select("id, expires_at, used_at")
-    .eq("phone", phoneE164)
-    .eq("token", token)
-    .is("used_at", null)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (error || !data) return false;
-
-  if (new Date(data.expires_at) < new Date()) return false;
-
-  await admin.from("otp_verifications").update({ used_at: new Date().toISOString() }).eq("id", data.id);
-
-  return true;
+  return verifyOtp(phoneE164, token);
 }

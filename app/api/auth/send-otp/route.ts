@@ -38,7 +38,8 @@ export async function POST(request: NextRequest) {
   } catch (e) {
     const message = e instanceof Error ? e.message : "Failed to send WhatsApp code.";
     console.error("send-otp (whatsapp):", message);
-    return NextResponse.json({ error: message, code: "OTP_SEND_FAILED" }, { status: 502 });
+    const status = /Cannot reach Supabase|OTP store failed/i.test(message) ? 503 : 502;
+    return NextResponse.json({ error: message, code: "OTP_SEND_FAILED" }, { status });
   }
 
   return NextResponse.json({ ok: true });
