@@ -77,12 +77,16 @@ async function verifyInSupabase(phoneE164: string, token: string): Promise<boole
 export function formatOtpStoreError(raw: string): string {
   if (isNetworkError(raw)) {
     const host = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL ?? "your Supabase URL";
+    if (process.env.NODE_ENV === "production") {
+      return (
+        `Cannot reach Supabase (${host}). The project URL does not resolve — it may have been deleted or env vars point to the wrong project. ` +
+        "In Supabase Dashboard, open or create your project, copy Settings → API URL and keys, update them on Vercel, redeploy, then run pending SQL migrations."
+      );
+    }
     return (
-      `Cannot reach Supabase (${host}). The project may be paused or the URL is wrong. ` +
-      "Restore it in the Supabase dashboard, then retry. " +
-      (memoryFallbackEnabled()
-        ? "In local dev, OTP was not stored because Supabase failed before fallback could run."
-        : "Set OTP_STORE=memory only for local WhatsApp testing without Supabase.")
+      `Cannot reach Supabase (${host}). The project may be paused, deleted, or the URL is wrong. ` +
+      "Restore or create the project in the Supabase dashboard and update .env.local. " +
+      "For local WhatsApp-only testing without Supabase, set OTP_STORE=memory in .env.local."
     );
   }
   return raw.startsWith("OTP store failed:") ? raw : `OTP store failed: ${raw}`;
